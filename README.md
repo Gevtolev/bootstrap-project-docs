@@ -1,9 +1,7 @@
-# claude-md-guide
+# bootstrap-project-docs
 
 > 为项目搭建可落地、可维护、跨 AI coding agent 的文档体系。
 > 以 `AGENTS.md` 为项目规则唯一真相源，并配套 `ARCHITECTURE.md`、`docs/` 和项目级维护 Skill。
-
-仓库名为历史名称，暂时保留以兼容已有链接；当前 Skill 名为 `bootstrap-project-docs`。
 
 ## 这个仓库提供什么
 
@@ -44,8 +42,8 @@
 先 clone 仓库，并把 Skill 源目录记为绝对路径：
 
 ```bash
-git clone https://github.com/Gevtolev/claude-md-guide.git
-cd claude-md-guide
+git clone https://github.com/Gevtolev/bootstrap-project-docs.git
+cd bootstrap-project-docs
 skill_source="$PWD/skills/bootstrap-project-docs"
 ```
 
