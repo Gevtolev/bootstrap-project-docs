@@ -2,7 +2,7 @@
 # 用 stub claude 验证 anti-drift hook 的逻辑分支，不调真实 LLM。
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-TMPL="$ROOT/skills/bootstrap-claude-docs/templates/anti-drift-hook.sh.tmpl"
+TMPL="$ROOT/skills/bootstrap-project-docs/templates/anti-drift-hook.sh.tmpl"
 fail=0
 check() { if eval "$2"; then echo "  ✓ $1"; else echo "  ✗ $1"; fail=1; fi; }
 

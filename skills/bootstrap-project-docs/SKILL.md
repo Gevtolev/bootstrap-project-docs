@@ -1,33 +1,34 @@
 ---
-name: bootstrap-claude-docs
+name: bootstrap-project-docs
 description: |
   Use when initializing, creating, restructuring, or scaffolding a project's documentation
-  system for Claude Code — covering CLAUDE.md, ARCHITECTURE.md, AGENTS.md, and docs/
+  system for AI coding agents — covering AGENTS.md, ARCHITECTURE.md, and docs/
   subdirectories with decisions/insights/research/exec-plans. Use when user says: 初始化文档体系,
-  搭建 CLAUDE.md 体系, 建立项目文档框架, bootstrap project docs, scaffold CLAUDE.md system.
-  Use also when /init output feels too thin or when an existing CLAUDE.md needs restructuring
-  into a multi-file system.
+  搭建 AGENTS.md 体系, 建立项目文档框架, bootstrap project docs, scaffold AGENTS.md system.
+  Use also when an agent's init output feels too thin, when an existing AGENTS.md needs
+  restructuring, or when legacy CLAUDE.md guidance must be migrated into AGENTS.md.
 ---
 
-# Bootstrap Claude Docs
+# Bootstrap Project Docs
 
-为目标项目从零搭建（或重构）一整套可落地、可维护的 Claude Code 文档体系。比 `/init` 产出更完整、更结构化。
+为目标项目从零搭建或重构一套可落地、可维护、跨 AI coding agent 的文档体系。`AGENTS.md` 是项目规则唯一真相源。
 
 ## When to Use / Skip
 
 **Use when:**
 - 新项目初始化，需要文档骨架
 - 已有项目代码丰富但文档稀薄
-- 已有 CLAUDE.md 但全堆一文件，需拆分为体系
+- 已有 AGENTS.md 但全堆一文件，需拆分为体系
+- 仅有旧 `CLAUDE.md`，需要一次性迁移到 `AGENTS.md`
 
 **Skip when:**
-- 只需更新单个 CLAUDE.md 段落 → 直接 Edit
-- 已有完整体系，只需审计 → 用 claude-md-improver
+- 只需更新单个 AGENTS.md 段落 → 直接 Edit
+- 已有完整体系，只需审计 → 直接使用项目的维护 Skill
 - 项目极小（单文件脚本） → 不必上完整体系
 
 ## Workflow
 
-三阶段，三检查点。每个 phase 用 TodoWrite 跟踪。
+三阶段，三检查点。每个 phase 使用当前 Agent 的原生任务跟踪能力记录进度。
 
 **Phase 0 — 入口分流**
 检测 cwd → 三种路径：greenfield / complete / restructure。✋ 检查点 0：用户确认走哪条。
@@ -37,22 +38,22 @@ description: |
 输出"假设清单"。✋ 检查点 1：用户确认假设。
 完整自检见 `references/phase-1-checklist.md`。
 
-**Phase 2 — 骨架生成**（写到 `.claude-docs-staging/`）
+**Phase 2 — 骨架生成**（写到 `.project-docs-staging/`）
 按项目类型选模板（见 `references/project-type-variants.md`），只建**核心集**：
-`CLAUDE.md`/`ARCHITECTURE.md`/`AGENTS.md`、`docs/decisions/`（README + ADR 模板）、`docs/exec-plans/`（README + plan 模板 + tech-debt）。
+`AGENTS.md`/`ARCHITECTURE.md`、`docs/decisions/`（README + ADR 模板）、`docs/exec-plans/`（README + plan 模板 + tech-debt）。
 **lazy**：`docs/glossary.md` / `insights/` / `research/` 不预建，首次有内容才创建（空目录是净亏损）。
-可选：`.ignore`（ripgrep 格式）。Monorepo 另为每个子包生成 `CLAUDE.md`。
+可选：`.ignore`（ripgrep 格式）。Monorepo 另为每个子包生成 `AGENTS.md`。
 ✋ 检查点 2：用户审阅 staging → 确认后原子 mv 到正式位置。完整自检见 `references/phase-2-checklist.md`。
 
 **Phase 2.5 — 生成项目级维护 skill**（核心创新）
-实例化 `templates/maintain-claude-docs-SKILL.md.tmpl` → `.claude/skills/maintain-claude-docs/SKILL.md`。
+实例化 `templates/maintain-project-docs-SKILL.md.tmpl` → 默认写入 `.agents/skills/maintain-project-docs/SKILL.md`；若当前 Agent 明确要求其他项目级 Skill 目录，先向用户说明再使用其官方目录。
 description 按类型定制（见 `references/project-type-variants.md`），body 含按需文档体检清单，
 让阶段性 / 显式触发时维护文档（非每改动自动跑）。
 
 **Phase 2.6 — 生成项目级防漂移 hook（防漂移闭环）**
 检测 `git` 与 `claude` CLI：
-- 有 git → 用 `templates/source-of-truth-map.tmpl` 生成 `docs/source-of-truth-map.md`（按 Phase 1 扫描填规则行），并用 `templates/anti-drift-hook.sh.tmpl` 安装 pre-push hook（默认 `.git/hooks/pre-push`，多人项目用 `core.hooksPath`）。
-- 无 git → 跳过 hook，把防漂移落回 maintain skill 的手动 reconcile 步骤。
+- 同时可用 → 用 `templates/source-of-truth-map.tmpl` 生成 `docs/source-of-truth-map.md`（按 Phase 1 扫描填规则行），并用 `templates/anti-drift-hook.sh.tmpl` 安装 pre-push hook（默认 `.git/hooks/pre-push`，多人项目用 `core.hooksPath`）。
+- 缺少任一项 → 跳过 hook，把防漂移落回维护 Skill 的手动 reconcile 步骤；不影响其余 Agent 使用本 Skill。
 完整蓝图（两阶段 prompt / 挂点 / 安装 / 降级）见 `references/anti-drift-hook.md`。✋ 检查点 2.6：把生成的映射表规则给用户确认（哪些 `auto` 哪些 `notify`）。
 
 **Phase 3 — 深度填充与验证**
@@ -91,9 +92,9 @@ docs 子目录，目的互斥不重叠（★=核心集，其余 lazy 按需建�
 
 | 错误 | 修正 |
 |------|------|
-| 直接覆盖现有 CLAUDE.md | 走 restructure，备份 `.bak.<ts>`，逐章确认 |
+| 直接覆盖现有 AGENTS.md | 走 restructure，备份 `.bak.<ts>`，逐章确认 |
 | 跳过检查点 | 三个检查点必须停下问用户 |
-| 把架构写进 CLAUDE.md | 关注点分离——架构进 ARCHITECTURE.md |
+| 把架构写进 AGENTS.md | 关注点分离——架构进 ARCHITECTURE.md |
 | 忘了项目级维护 skill | Phase 2.5 必做；维护体系长期靠它 |
 | 忘了生成防漂移 hook/映射表 | Phase 2.6：有 git 就装 pre-push hook + 映射表，无 git 落回 maintain |
 | 直接写到 cwd | 必须先 staging，用户确认后 mv |

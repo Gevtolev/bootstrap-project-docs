@@ -2,17 +2,16 @@
 
 > 本 checklist 在 Phase 2 末尾执行；全部通过 + 用户审阅 staging 后，才能 mv 到正式位置。
 
-## 文件存在性（核心集，以下路径均以 `.claude-docs-staging/` 为根）
+## 文件存在性（核心集，以下路径均以 `.project-docs-staging/` 为根）
 
-- [ ] `CLAUDE.md`
-- [ ] `ARCHITECTURE.md`
 - [ ] `AGENTS.md`
+- [ ] `ARCHITECTURE.md`
 - [ ] `docs/decisions/README.md`
 - [ ] `docs/decisions/adr-template.md`
 - [ ] `docs/exec-plans/README.md`
 - [ ] `docs/exec-plans/tech-debt-tracker.md`
 - [ ] `docs/exec-plans/exec-plan-template.md`
-- [ ] `.claude/skills/maintain-claude-docs/SKILL.md`
+- [ ] `.agents/skills/maintain-project-docs/SKILL.md`
 
 ## 不应预建（lazy，首次有内容才创建）
 
@@ -21,7 +20,7 @@
 - [ ] **未**创建 `docs/research/`（除非已有要落的调研）
 - [ ] 空目录 = 净亏损：不为"目录完整"预建任何空目录
 
-## CLAUDE.md 必含段落
+## AGENTS.md 必含段落（项目规则唯一真相源）
 
 - [ ] `## 改动自查` 或同义节（≤4 核心项 + 一行软提示，不列长清单）
 - [ ] `## 文档` 索引节（列出 decisions / exec-plans，及 glossary / insights / research 并标「可选」）
@@ -29,7 +28,7 @@
 
 ## 维护 skill 必含字段
 
-- [ ] frontmatter 有 `name: maintain-claude-docs`
+- [ ] frontmatter 有 `name: maintain-project-docs`
 - [ ] description 含按需 / 阶段性触发条件 + 项目类型相关触发词（明示「非每改动」）
 - [ ] 正文包含文档体检清单（含"难逆转+没上下文会困惑+真有取舍 → 新增极简 ADR"项）
 

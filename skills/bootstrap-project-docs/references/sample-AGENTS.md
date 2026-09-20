@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-acme-app — 一个虚构的 SaaS 看板工具（仅作 bootstrap-claude-docs 演示用）。
+acme-app — 一个虚构的 SaaS 看板工具（仅作 bootstrap-project-docs 演示用）。
 
 > 架构细节见 [ARCHITECTURE.md](./ARCHITECTURE.md)，本文件只包含规则和流程。
 

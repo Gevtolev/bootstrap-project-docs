@@ -12,17 +12,17 @@
 
 - [ ] 每个**已创建**的 `docs/<dir>/README.md` 索引表与该目录实际文件对齐（无遗漏、无幻觉）
 - [ ] decisions/README.md 的决策矩阵与 `docs/decisions/` 中实际 ADR 文件对齐
-- [ ] CLAUDE.md 文档索引节：核心集（decisions / exec-plans）链接存在且可点击；lazy 项（glossary / insights / research）已标「可选」，**不要求文件已存在**
+- [ ] AGENTS.md 文档索引节：核心集（decisions / exec-plans）链接存在且可点击；lazy 项（glossary / insights / research）已标「可选」，**不要求文件已存在**
 - [ ] 未预建任何空的 lazy 目录（glossary / insights / research 无内容则不应存在）
 
 ## 维护 skill 健全
 
-- [ ] 项目级 maintain-claude-docs/SKILL.md 已落到 `.claude/skills/`
+- [ ] 项目级 maintain-project-docs/SKILL.md 已落到 `.agents/skills/` 或用户确认的当前 Agent 项目级 Skill 目录
 - [ ] 该 skill 的 description 适配本项目类型（不是通用模板）
 
 ## 收尾产物
 
 - [ ] 已打印「使用指南」卡片：日常该往哪写什么、维护 skill 何时触发
-- [ ] `.claude-docs-staging/` 已清理
+- [ ] `.project-docs-staging/` 已清理
 - [ ] 无原文件被覆盖（重构路径除外，且备份已存在）
-- [ ] （仅 restructure 路径）`CLAUDE.md.bak.<ts>` 存在；所有从旧 CLAUDE.md 迁出的段落都有去向标注
+- [ ] （仅 restructure 路径）`AGENTS.md.bak.<ts>` 存在；所有从旧 AGENTS.md 迁出的段落都有去向标注

@@ -1,12 +1,14 @@
-# bootstrap-claude-docs 实现计划（v1 历史文档）
+# bootstrap-project-docs 实现计划（v1 历史文档）
 
 > **⚠️ 本文件是 v0.1.0 的实现计划，已全部完成。v0.2.0 引入了"decisions 取代 handover"的重构，本文件中的 handover 引用已过时，保留仅作历史参考。**
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 实现一个 Claude Code skill `bootstrap-claude-docs`，指导 Claude 为目标项目从 0 创建或重构一整套文档体系（CLAUDE.md / ARCHITECTURE.md / AGENTS.md / docs/ + 项目级维护 skill）。
+> 本文件是首版实现时的历史计划。当前名称、安装方式和运行规范以 [README.md](../README.md) 与 [SKILL.md](../skills/bootstrap-project-docs/SKILL.md) 为准。
 
-**Architecture:** 仓库 = 一份可分享的 skill 包。`skills/bootstrap-claude-docs/` 镜像 `~/.claude/skills/`，`commands/` 镜像 `~/.claude/commands/`。SKILL.md 作为薄主流程（≤ 500 词），深度内容下沉到 `references/`，10 个模板放 `templates/`。设计哲学不在 SKILL.md 里展开，由 SKILL.md 按需引用 references。
+**Goal:** 实现一个跨 AI coding agent 的 Skill `bootstrap-project-docs`，指导 Agent 为目标项目从 0 创建或重构一整套文档体系（AGENTS.md / ARCHITECTURE.md / docs/ + 项目级维护 Skill）。
+
+**Architecture:** 仓库 = 一份可分享的 skill 包。`skills/bootstrap-project-docs/` 镜像 `~/.claude/skills/`，`commands/` 镜像 `~/.claude/commands/`。SKILL.md 作为薄主流程（≤ 500 词），深度内容下沉到 `references/`，10 个模板放 `templates/`。设计哲学不在 SKILL.md 里展开，由 SKILL.md 按需引用 references。
 
 **Tech Stack:** Markdown only。无需打包/构建。模板用 `{{占位符}}` 风格，由 skill 在运行时填充。
 
@@ -26,7 +28,7 @@ claude-md-guide/
 │   ├── design.md                                   # 已存在（spec）
 │   └── plan.md                                     # 本文件
 ├── skills/
-│   └── bootstrap-claude-docs/
+│   └── bootstrap-project-docs/
 │       ├── SKILL.md                                # T13
 │       ├── references/
 │       │   ├── phase-1-checklist.md                # T2
@@ -34,11 +36,11 @@ claude-md-guide/
 │       │   ├── phase-3-checklist.md                # T4
 │       │   ├── design-philosophy.md                # T5
 │       │   ├── project-type-variants.md            # T6
-│       │   ├── sample-CLAUDE.md                    # T7
+│       │   ├── sample-AGENTS.md                    # T7
 │       │   ├── sample-ARCHITECTURE.md              # T7
 │       │   └── sample-handover.md                  # T7
 │       └── templates/
-│           ├── CLAUDE.md.tmpl                      # T8
+│           ├── AGENTS.md.tmpl                      # T8
 │           ├── ARCHITECTURE.md.tmpl                # T9
 │           ├── AGENTS.md.tmpl                      # T9
 │           ├── docs-handover-README.tmpl           # T10
@@ -47,7 +49,7 @@ claude-md-guide/
 │           ├── docs-exec-plans-README.tmpl         # T10
 │           ├── tech-debt-tracker.tmpl              # T11
 │           ├── exec-plan.tmpl                      # T11
-│           └── maintain-claude-docs-SKILL.md.tmpl  # T12
+│           └── maintain-project-docs-SKILL.md.tmpl  # T12
 └── commands/
     └── bootstrap-docs.md                           # T14
 ```
@@ -113,7 +115,7 @@ SOFTWARE.
 ```
 .DS_Store
 *.bak.*
-.claude-docs-staging/
+.project-docs-staging/
 node_modules/
 .idea/
 .vscode/
@@ -124,7 +126,7 @@ node_modules/
 ```markdown
 # claude-md-guide
 
-> bootstrap-claude-docs — 为项目构建可落地、可维护的 Claude Code 文档体系
+> bootstrap-project-docs — 为项目构建可落地、可维护的 Claude Code 文档体系
 
 （详细使用说明在 T16 补全）
 ```
@@ -145,14 +147,14 @@ git commit -m "chore: 初始化仓库骨架"
 ## Task 2: references/phase-1-checklist.md（Phase 1 自检）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/references/phase-1-checklist.md`
+- Create: `skills/bootstrap-project-docs/references/phase-1-checklist.md`
 
 > Phase 1 是"扫描与推断"。这份 checklist 由 skill 在 Phase 1 结束时执行，全部通过才能进入检查点 1。
 
 - [ ] **Step 1：创建目录**
 
 ```bash
-mkdir -p skills/bootstrap-claude-docs/references
+mkdir -p skills/bootstrap-project-docs/references
 ```
 
 - [ ] **Step 2：写文件**
@@ -167,7 +169,7 @@ mkdir -p skills/bootstrap-claude-docs/references
 - [ ] **项目类型已识别**：从 `package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` / `Gemfile` / `*.podspec` / `pubspec.yaml` 至少一处推断出类型，分类落入 `references/project-type-variants.md` 7 种之一
 - [ ] **主语言已确认**：依据 `README*` 字符占比 + 抽样代码注释；若无法判断必须 ASK 用户
 - [ ] **关键模块已列出**：识别 `src/` `lib/` `app/` `cmd/` `internal/` `pkg/` 等入口结构；对每个一级子目录给出"看起来是做什么的"猜测
-- [ ] **现有文档已清点**：grep `**/CLAUDE.md` `**/AGENTS.md` `**/ARCHITECTURE.md` `docs/**` `README*`；列出存在的、缺失的
+- [ ] **现有文档已清点**：搜索 `**/AGENTS.md`、`**/ARCHITECTURE.md`、`docs/**`、`README*`；旧 `CLAUDE.md` 仅作一次性迁移输入
 - [ ] **入口路径已分流**：greenfield / complete / restructure 三选一已确定
 - [ ] **假设清单已生成**：每条推断都带"假设"标签，且呈交给用户审阅
 - [ ] **用户已对假设清单做出回应**：确认 / 修正 / 追加
@@ -175,14 +177,14 @@ mkdir -p skills/bootstrap-claude-docs/references
 ## 不应触发的事件
 
 - [ ] 没写任何文件（Phase 1 严禁动盘）
-- [ ] 没启动 `.claude-docs-staging/`（Phase 2 才用）
+- [ ] 没启动 `.project-docs-staging/`（Phase 2 才用）
 ```
 
 - [ ] **Step 3：自验**
 
 ```bash
-test -f skills/bootstrap-claude-docs/references/phase-1-checklist.md && \
-  grep -c '^- \[ \]' skills/bootstrap-claude-docs/references/phase-1-checklist.md
+test -f skills/bootstrap-project-docs/references/phase-1-checklist.md && \
+  grep -c '^- \[ \]' skills/bootstrap-project-docs/references/phase-1-checklist.md
 ```
 
 预期：≥ 8（7 个必过 + 至少 1 个不应触发）。
@@ -190,7 +192,7 @@ test -f skills/bootstrap-claude-docs/references/phase-1-checklist.md && \
 - [ ] **Step 4：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/references/phase-1-checklist.md
+git add skills/bootstrap-project-docs/references/phase-1-checklist.md
 git commit -m "feat(skill): add phase-1 scan checklist"
 ```
 
@@ -199,7 +201,7 @@ git commit -m "feat(skill): add phase-1 scan checklist"
 ## Task 3: references/phase-2-checklist.md（Phase 2 自检）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/references/phase-2-checklist.md`
+- Create: `skills/bootstrap-project-docs/references/phase-2-checklist.md`
 
 - [ ] **Step 1：写文件**
 
@@ -208,9 +210,9 @@ git commit -m "feat(skill): add phase-1 scan checklist"
 
 > 本 checklist 在 Phase 2 末尾执行；全部通过 + 用户审阅 staging 后，才能 mv 到正式位置。
 
-## 文件存在性（写到 .claude-docs-staging/）
+## 文件存在性（写到 .project-docs-staging/）
 
-- [ ] `CLAUDE.md`
+- [ ] `AGENTS.md`
 - [ ] `ARCHITECTURE.md`
 - [ ] `AGENTS.md`
 - [ ] `docs/handover/README.md`
@@ -219,9 +221,9 @@ git commit -m "feat(skill): add phase-1 scan checklist"
 - [ ] `docs/exec-plans/README.md`
 - [ ] `docs/exec-plans/tech-debt-tracker.md`
 - [ ] `docs/exec-plans/exec-plan-template.md`
-- [ ] `.claude/skills/maintain-claude-docs/SKILL.md`
+- [ ] `.agents/skills/maintain-project-docs/SKILL.md`
 
-## CLAUDE.md 必含段落
+## AGENTS.md 必含段落
 
 - [ ] `## 改动自查` 或同义节
 - [ ] `## 文档` 索引节（链接所有 docs/<dir>/）
@@ -229,7 +231,7 @@ git commit -m "feat(skill): add phase-1 scan checklist"
 
 ## 维护 skill 必含字段
 
-- [ ] frontmatter 有 `name: maintain-claude-docs`
+- [ ] frontmatter 有 `name: maintain-project-docs`
 - [ ] description 以 `Use when` 开头，包含项目类型相关触发词
 - [ ] 正文包含至少 6 项检查清单
 
@@ -247,7 +249,7 @@ git commit -m "feat(skill): add phase-1 scan checklist"
 - [ ] **Step 2：自验**
 
 ```bash
-grep -c '^- \[ \]' skills/bootstrap-claude-docs/references/phase-2-checklist.md
+grep -c '^- \[ \]' skills/bootstrap-project-docs/references/phase-2-checklist.md
 ```
 
 预期：≥ 16
@@ -255,7 +257,7 @@ grep -c '^- \[ \]' skills/bootstrap-claude-docs/references/phase-2-checklist.md
 - [ ] **Step 3：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/references/phase-2-checklist.md
+git add skills/bootstrap-project-docs/references/phase-2-checklist.md
 git commit -m "feat(skill): add phase-2 skeleton checklist"
 ```
 
@@ -264,7 +266,7 @@ git commit -m "feat(skill): add phase-2 skeleton checklist"
 ## Task 4: references/phase-3-checklist.md（Phase 3 自检）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/references/phase-3-checklist.md`
+- Create: `skills/bootstrap-project-docs/references/phase-3-checklist.md`
 
 - [ ] **Step 1：写文件**
 
@@ -283,24 +285,24 @@ git commit -m "feat(skill): add phase-2 skeleton checklist"
 
 - [ ] 每个 `docs/<dir>/README.md` 的索引表与该目录实际文件对齐（无遗漏、无幻觉）
 - [ ] 若已有 handover 文档：对应 insights 文件名一致，且互相反向链接
-- [ ] CLAUDE.md 文档索引节的链接全部存在且可点击
+- [ ] AGENTS.md 文档索引节的链接全部存在且可点击
 
 ## 维护 skill 健全
 
-- [ ] 项目级 maintain-claude-docs/SKILL.md 已落到 `.claude/skills/`
+- [ ] 项目级 maintain-project-docs/SKILL.md 已落到 `.agents/skills/` 或用户确认的当前 Agent 项目级 Skill 目录
 - [ ] 该 skill 的 description 适配本项目类型（不是通用模板）
 
 ## 收尾产物
 
 - [ ] 已打印「使用指南」卡片：日常该往哪写什么、维护 skill 何时触发
-- [ ] `.claude-docs-staging/` 已清理
+- [ ] `.project-docs-staging/` 已清理
 - [ ] 无原文件被覆盖（重构路径除外，且备份已存在）
 ```
 
 - [ ] **Step 2：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/references/phase-3-checklist.md
+git add skills/bootstrap-project-docs/references/phase-3-checklist.md
 git commit -m "feat(skill): add phase-3 content checklist"
 ```
 
@@ -309,7 +311,7 @@ git commit -m "feat(skill): add phase-3 content checklist"
 ## Task 5: references/design-philosophy.md（5 大设计哲学）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/references/design-philosophy.md`
+- Create: `skills/bootstrap-project-docs/references/design-philosophy.md`
 
 > 内容来源：design.md §5。每条原则按 4 节展开：**做什么 / 反例 / 为什么 / 怎么落到模板**。
 
@@ -319,17 +321,17 @@ git commit -m "feat(skill): add phase-3 content checklist"
 ```markdown
 # 设计哲学
 
-bootstrap-claude-docs 的 5 条可移植原则。每条都附「做什么 / 反例 / 为什么 / 怎么落到模板」。
+bootstrap-project-docs 的 5 条可移植原则。每条都附「做什么 / 反例 / 为什么 / 怎么落到模板」。
 
 ## 1. 关注点分离（Separation of Concerns）
 
-**做什么**：CLAUDE.md 写规则与流程；ARCHITECTURE.md 写结构与数据流；docs/ 写深度。三者职责互斥。
+**做什么**：AGENTS.md 写规则与流程；ARCHITECTURE.md 写结构与数据流；docs/ 写深度。三者职责互斥。
 
-**反例**：把目录结构、数据流图、API 列表全塞进 CLAUDE.md，文件膨胀到 800 行 → AI 读不完，规则被深埋。
+**反例**：把目录结构、数据流图、API 列表全塞进 AGENTS.md，文件膨胀到 800 行 → AI 读不完，规则被深埋。
 
-**为什么**：CLAUDE.md 自动注入每次会话上下文；越短越容易被完整读到。架构会随代码漂移；放进 ARCHITECTURE.md 才能由专门的 audit 流程同步。
+**为什么**：AGENTS.md 自动注入每次会话上下文；越短越容易被完整读到。架构会随代码漂移；放进 ARCHITECTURE.md 才能由专门的 audit 流程同步。
 
-**怎么落到模板**：`CLAUDE.md.tmpl` 严禁出现"目录结构 / 数据库 schema / API 路由表"段落；这些段落只在 `ARCHITECTURE.md.tmpl`。
+**怎么落到模板**：`AGENTS.md.tmpl` 严禁出现"目录结构 / 数据库 schema / API 路由表"段落；这些段落只在 `ARCHITECTURE.md.tmpl`。
 
 ## 2. 双视角文档（Dual-Perspective）
 
@@ -363,31 +365,31 @@ bootstrap-claude-docs 的 5 条可移植原则。每条都附「做什么 / 反�
 
 ## 5. 自检纪律（Self-Check Discipline）
 
-**做什么**：CLAUDE.md 自带「改动自查」清单（改动是否涉及 i18n / db / types / 文档？）；项目级 maintain-claude-docs skill 通过 description 主动触发。
+**做什么**：AGENTS.md 自带「改动自查」清单（改动是否涉及 i18n / db / types / 文档？）；项目级 maintain-project-docs skill 通过 description 主动触发。
 
 **反例**：规则散落在 commit message / PR 模板 / wiki → AI 看不到，每次都要人提醒；新人入职第三个月才知道还要改 i18n。
 
-**为什么**：CLAUDE.md 是项目入口，所有约束写这里才稳；项目级 skill 作为冗余保险，让"忘了"成本更低。
+**为什么**：AGENTS.md 是项目入口，所有约束写这里才稳；项目级 skill 作为冗余保险，让"忘了"成本更低。
 
-**怎么落到模板**：`CLAUDE.md.tmpl` 必含 `## 改动自查` 段；`maintain-claude-docs-SKILL.md.tmpl` 把同样的清单变成主动触发的 skill。
+**怎么落到模板**：`AGENTS.md.tmpl` 必含 `## 改动自查` 段；`maintain-project-docs-SKILL.md.tmpl` 把同样的清单变成主动触发的 skill。
 ```
 
 - [ ] **Step 2：自验**
 
 ```bash
-grep -c '^## ' skills/bootstrap-claude-docs/references/design-philosophy.md
+grep -c '^## ' skills/bootstrap-project-docs/references/design-philosophy.md
 ```
 预期：≥ 6（5 条哲学 + 文件总览节）
 
 ```bash
-grep -c '\*\*做什么\*\*' skills/bootstrap-claude-docs/references/design-philosophy.md
+grep -c '\*\*做什么\*\*' skills/bootstrap-project-docs/references/design-philosophy.md
 ```
 预期：5
 
 - [ ] **Step 3：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/references/design-philosophy.md
+git add skills/bootstrap-project-docs/references/design-philosophy.md
 git commit -m "feat(skill): add design philosophy reference"
 ```
 
@@ -396,7 +398,7 @@ git commit -m "feat(skill): add design philosophy reference"
 ## Task 6: references/project-type-variants.md（7 种项目类型变体）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/references/project-type-variants.md`
+- Create: `skills/bootstrap-project-docs/references/project-type-variants.md`
 
 > 内容来源：design.md §6。7 种类型 × 3 个轴：检测信号 / ARCHITECTURE 必填章节 / docs/ 调整。
 
@@ -416,7 +418,7 @@ git commit -m "feat(skill): add design philosophy reference"
 | CLI 工具 | bin 入口 / cobra / click / commander | 命令树 / IO 协议 / 配置加载 | 主用 handover + research |
 | 库 / SDK | 主导出 / 多版本支持 | 公共 API 表面 / 版本兼容矩阵 / 扩展点 | 主用 handover + research |
 | 后端服务 | Dockerfile + 长进程 | 服务边界 / 队列 / 数据流 / SLO | 全 4 类 |
-| Monorepo | workspaces / lerna / nx / turborepo | 工作区图 / 包依赖图 / 发布流 | 顶层 + 每包轻量 CLAUDE.md |
+| Monorepo | workspaces / lerna / nx / turborepo | 工作区图 / 包依赖图 / 发布流 | 顶层 + 每包轻量 AGENTS.md |
 | 移动 App | iOS / Android / RN / Flutter | 平台分支 / 状态管理 / 原生桥 | handover + insights |
 | 数据 / Notebook | .ipynb 多 / DAG 文件 | Pipeline DAG / 数据契约 / 实验记录 | research 比 insights 重要 |
 
@@ -437,7 +439,7 @@ git commit -m "feat(skill): add design philosophy reference"
 ### docs/ 调整
 保留全部 4 类（handover / insights / research / exec-plans）。
 
-### maintain-claude-docs description 起手
+### maintain-project-docs description 起手
 `Use when adding a route, API endpoint, page, or modifying database schema...`
 
 ---
@@ -457,7 +459,7 @@ git commit -m "feat(skill): add design philosophy reference"
 ### docs/ 调整
 默认不要 `insights/`（CLI 工具产品决策少；让用户自己开启）；其余保留。
 
-### maintain-claude-docs description 起手
+### maintain-project-docs description 起手
 `Use when adding or modifying a command, flag, or configuration option...`
 
 ---
@@ -477,7 +479,7 @@ git commit -m "feat(skill): add design philosophy reference"
 ### docs/ 调整
 默认 `handover/` + `research/`；`insights/` 可选；`exec-plans/` 保留。
 
-### maintain-claude-docs description 起手
+### maintain-project-docs description 起手
 `Use when modifying public API surface, exports, or extension points...`
 
 ---
@@ -500,7 +502,7 @@ git commit -m "feat(skill): add design philosophy reference"
 3. 发布流（独立发布 vs 统一发布）
 
 ### docs/ 调整
-顶层全 4 类；建议每个 package 一份轻量 CLAUDE.md（指向根 CLAUDE.md + 自己的特殊点）。
+顶层全 4 类；建议每个 package 一份轻量 AGENTS.md（指向根 AGENTS.md + 自己的特殊点）。
 
 ---
 
@@ -537,14 +539,14 @@ git commit -m "feat(skill): add design philosophy reference"
 - [ ] **Step 2：自验**
 
 ```bash
-grep -c '^## [0-9]\.' skills/bootstrap-claude-docs/references/project-type-variants.md
+grep -c '^## [0-9]\.' skills/bootstrap-project-docs/references/project-type-variants.md
 ```
 预期：7
 
 - [ ] **Step 3：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/references/project-type-variants.md
+git add skills/bootstrap-project-docs/references/project-type-variants.md
 git commit -m "feat(skill): add project type variants reference"
 ```
 
@@ -553,19 +555,19 @@ git commit -m "feat(skill): add project type variants reference"
 ## Task 7: references/sample-*.md（去标识化样例 × 3）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/references/sample-CLAUDE.md`
-- Create: `skills/bootstrap-claude-docs/references/sample-ARCHITECTURE.md`
-- Create: `skills/bootstrap-claude-docs/references/sample-handover.md`
+- Create: `skills/bootstrap-project-docs/references/sample-AGENTS.md`
+- Create: `skills/bootstrap-project-docs/references/sample-ARCHITECTURE.md`
+- Create: `skills/bootstrap-project-docs/references/sample-handover.md`
 
 > **重要**：这 3 份样例必须去标识化——不引用 insilico-pilot 或任何真实项目。设计假想项目 `acme-app`（虚构 SaaS）作为样例项目。
 
-- [ ] **Step 1：sample-CLAUDE.md（约 100 行）**
+- [ ] **Step 1：sample-AGENTS.md（约 100 行）**
 
 骨架：
 ```markdown
-# CLAUDE.md
+# AGENTS.md
 
-acme-app — 虚构样例项目（仅作 bootstrap-claude-docs 演示用）。
+acme-app — 虚构样例项目（仅作 bootstrap-project-docs 演示用）。
 
 > 架构细节见 [ARCHITECTURE.md](./ARCHITECTURE.md)。本文件只含规则与流程。
 
@@ -628,39 +630,39 @@ acme-app 是一个虚构的 SaaS 看板工具。
 - [ ] **Step 4：自验**
 
 ```bash
-ls skills/bootstrap-claude-docs/references/sample-*.md | wc -l
+ls skills/bootstrap-project-docs/references/sample-*.md | wc -l
 ```
 预期：3
 
 ```bash
-grep -l 'insilico\|silicopilot' skills/bootstrap-claude-docs/references/sample-*.md
+grep -l 'insilico\|silicopilot' skills/bootstrap-project-docs/references/sample-*.md
 ```
 预期：空（不应匹配任何文件）
 
 - [ ] **Step 5：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/references/sample-*.md
+git add skills/bootstrap-project-docs/references/sample-*.md
 git commit -m "feat(skill): add anonymized sample CLAUDE/ARCHITECTURE/handover"
 ```
 
 ---
 
-## Task 8: templates/CLAUDE.md.tmpl（核心模板）
+## Task 8: templates/AGENTS.md.tmpl（核心模板）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/templates/CLAUDE.md.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/AGENTS.md.tmpl`
 
 - [ ] **Step 1：创建目录**
 
 ```bash
-mkdir -p skills/bootstrap-claude-docs/templates
+mkdir -p skills/bootstrap-project-docs/templates
 ```
 
 - [ ] **Step 2：写模板**
 
 ```markdown
-# CLAUDE.md
+# AGENTS.md
 
 {{PROJECT_NAME}} — {{ONE_LINE_DESCRIPTION}}
 
@@ -707,20 +709,20 @@ mkdir -p skills/bootstrap-claude-docs/templates
 - [ ] **Step 3：自验**
 
 ```bash
-grep -c '{{[A-Z_]\+}}' skills/bootstrap-claude-docs/templates/CLAUDE.md.tmpl
+grep -c '{{[A-Z_]\+}}' skills/bootstrap-project-docs/templates/AGENTS.md.tmpl
 ```
 预期：≥ 5（5 个占位符）
 
 ```bash
-grep -c '## ' skills/bootstrap-claude-docs/templates/CLAUDE.md.tmpl
+grep -c '## ' skills/bootstrap-project-docs/templates/AGENTS.md.tmpl
 ```
 预期：≥ 5（5 个二级节）
 
 - [ ] **Step 4：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/templates/CLAUDE.md.tmpl
-git commit -m "feat(skill): add CLAUDE.md template"
+git add skills/bootstrap-project-docs/templates/AGENTS.md.tmpl
+git commit -m "feat(skill): add AGENTS.md template"
 ```
 
 ---
@@ -728,8 +730,8 @@ git commit -m "feat(skill): add CLAUDE.md template"
 ## Task 9: templates/ARCHITECTURE.md.tmpl + AGENTS.md.tmpl
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/templates/ARCHITECTURE.md.tmpl`
-- Create: `skills/bootstrap-claude-docs/templates/AGENTS.md.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/ARCHITECTURE.md.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/AGENTS.md.tmpl`
 
 - [ ] **Step 1：写 ARCHITECTURE.md.tmpl**
 
@@ -775,31 +777,20 @@ git commit -m "feat(skill): add CLAUDE.md template"
 
 - [ ] **Step 2：写 AGENTS.md.tmpl**
 
-```markdown
-<!--
-  AGENTS.md 是 CLAUDE.md 的镜像，给非 Claude 的 AI 工具读。
-  内容应与 CLAUDE.md 完全一致；建议用同步脚本或 symlink。
--->
-
-# AGENTS.md
-
-{{COPY_OF_CLAUDE_MD}}
-<!-- TODO: 默认与 CLAUDE.md 完全一致。bootstrap-claude-docs 在生成时直接复制 CLAUDE.md 内容；
-     用户后续可按需 diverge -->
-```
+`AGENTS.md.tmpl` 直接包含项目规则、工作流、自检命令和文档索引，不生成第二份镜像文件。
 
 - [ ] **Step 3：自验**
 
 ```bash
-ls skills/bootstrap-claude-docs/templates/ARCHITECTURE.md.tmpl skills/bootstrap-claude-docs/templates/AGENTS.md.tmpl
+ls skills/bootstrap-project-docs/templates/ARCHITECTURE.md.tmpl skills/bootstrap-project-docs/templates/AGENTS.md.tmpl
 ```
 预期：两个文件均存在。
 
 - [ ] **Step 4：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/templates/ARCHITECTURE.md.tmpl \
-        skills/bootstrap-claude-docs/templates/AGENTS.md.tmpl
+git add skills/bootstrap-project-docs/templates/ARCHITECTURE.md.tmpl \
+        skills/bootstrap-project-docs/templates/AGENTS.md.tmpl
 git commit -m "feat(skill): add ARCHITECTURE and AGENTS templates"
 ```
 
@@ -808,10 +799,10 @@ git commit -m "feat(skill): add ARCHITECTURE and AGENTS templates"
 ## Task 10: templates/docs-*-README.tmpl × 4（docs 子目录索引模板）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/templates/docs-handover-README.tmpl`
-- Create: `skills/bootstrap-claude-docs/templates/docs-insights-README.tmpl`
-- Create: `skills/bootstrap-claude-docs/templates/docs-research-README.tmpl`
-- Create: `skills/bootstrap-claude-docs/templates/docs-exec-plans-README.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/docs-handover-README.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/docs-insights-README.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/docs-research-README.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/docs-exec-plans-README.tmpl`
 
 - [ ] **Step 1：docs-handover-README.tmpl**
 
@@ -927,14 +918,14 @@ git commit -m "feat(skill): add ARCHITECTURE and AGENTS templates"
 - [ ] **Step 5：自验**
 
 ```bash
-ls skills/bootstrap-claude-docs/templates/docs-*-README.tmpl | wc -l
+ls skills/bootstrap-project-docs/templates/docs-*-README.tmpl | wc -l
 ```
 预期：4
 
 - [ ] **Step 6：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/templates/docs-*-README.tmpl
+git add skills/bootstrap-project-docs/templates/docs-*-README.tmpl
 git commit -m "feat(skill): add docs/{handover,insights,research,exec-plans} README templates"
 ```
 
@@ -943,8 +934,8 @@ git commit -m "feat(skill): add docs/{handover,insights,research,exec-plans} REA
 ## Task 11: templates/tech-debt-tracker.tmpl + exec-plan.tmpl
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/templates/tech-debt-tracker.tmpl`
-- Create: `skills/bootstrap-claude-docs/templates/exec-plan.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/tech-debt-tracker.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/exec-plan.tmpl`
 
 - [ ] **Step 1：tech-debt-tracker.tmpl**
 
@@ -999,25 +990,25 @@ git commit -m "feat(skill): add docs/{handover,insights,research,exec-plans} REA
 - [ ] **Step 3：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/templates/tech-debt-tracker.tmpl \
-        skills/bootstrap-claude-docs/templates/exec-plan.tmpl
+git add skills/bootstrap-project-docs/templates/tech-debt-tracker.tmpl \
+        skills/bootstrap-project-docs/templates/exec-plan.tmpl
 git commit -m "feat(skill): add tech-debt-tracker and exec-plan templates"
 ```
 
 ---
 
-## Task 12: templates/maintain-claude-docs-SKILL.md.tmpl（核心创新：项目级维护 skill）
+## Task 12: templates/maintain-project-docs-SKILL.md.tmpl（核心创新：项目级维护 skill）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/templates/maintain-claude-docs-SKILL.md.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/maintain-project-docs-SKILL.md.tmpl`
 
-> 这个模板会被实例化到目标项目的 `.claude/skills/maintain-claude-docs/SKILL.md`。description 适配项目类型（来自 references/project-type-variants.md "maintain-claude-docs description 起手"）。
+> 这个模板会被实例化到目标项目的 `.agents/skills/maintain-project-docs/SKILL.md`。description 适配项目类型（来自 references/project-type-variants.md "maintain-project-docs description 起手"）。
 
 - [ ] **Step 1：写模板**
 
 ```markdown
 ---
-name: maintain-claude-docs
+name: maintain-project-docs
 description: |
   {{TYPE_SPECIFIC_TRIGGER_SENTENCE}}
   Reminds Claude to keep the documentation system in sync (handover docs, insights docs,
@@ -1071,28 +1062,28 @@ description: |
 - [ ] **Step 2：自验**
 
 ```bash
-grep -c '^[0-9]\.' skills/bootstrap-claude-docs/templates/maintain-claude-docs-SKILL.md.tmpl
+grep -c '^[0-9]\.' skills/bootstrap-project-docs/templates/maintain-project-docs-SKILL.md.tmpl
 ```
 预期：≥ 6（6 项清单）
 
 ```bash
-head -1 skills/bootstrap-claude-docs/templates/maintain-claude-docs-SKILL.md.tmpl
+head -1 skills/bootstrap-project-docs/templates/maintain-project-docs-SKILL.md.tmpl
 ```
 预期：`---`
 
 - [ ] **Step 3：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/templates/maintain-claude-docs-SKILL.md.tmpl
-git commit -m "feat(skill): add project-level maintain-claude-docs skill template"
+git add skills/bootstrap-project-docs/templates/maintain-project-docs-SKILL.md.tmpl
+git commit -m "feat(skill): add project-level maintain-project-docs skill template"
 ```
 
 ---
 
-## Task 13: skills/bootstrap-claude-docs/SKILL.md（主流程，≤ 500 词）
+## Task 13: skills/bootstrap-project-docs/SKILL.md（主流程，≤ 500 词）
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/SKILL.md`
+- Create: `skills/bootstrap-project-docs/SKILL.md`
 
 > 严格遵守 design.md §3.4 约束：description 只写"何时用"、≤ 500 词、深内容下沉到 references/。
 
@@ -1100,35 +1091,35 @@ git commit -m "feat(skill): add project-level maintain-claude-docs skill templat
 
 ```markdown
 ---
-name: bootstrap-claude-docs
+name: bootstrap-project-docs
 description: |
   Use when initializing, creating, restructuring, or scaffolding a project's documentation
-  system for Claude Code — covering CLAUDE.md, ARCHITECTURE.md, AGENTS.md, and docs/
+  system for AI coding agents — covering AGENTS.md, ARCHITECTURE.md, and docs/
   subdirectories with handover/insights/research/exec-plans. Use when user says: 初始化文档体系,
-  搭建 CLAUDE.md 体系, 建立项目文档框架, bootstrap project docs, scaffold CLAUDE.md system.
-  Use also when /init output feels too thin or when an existing CLAUDE.md needs restructuring
+  搭建 AGENTS.md 体系, 建立项目文档框架, bootstrap project docs, scaffold AGENTS.md system.
+  Use also when /init output feels too thin or when an existing AGENTS.md needs restructuring
   into a multi-file system.
 ---
 
-# Bootstrap Claude Docs
+# Bootstrap Project Docs
 
-为目标项目从零搭建（或重构）一整套可落地、可维护的 Claude Code 文档体系。比 `/init` 产出更完整、更结构化。
+为目标项目从零搭建（或重构）一整套可落地、可维护、跨 Agent 的文档体系。
 
 ## When to Use / Skip
 
 **Use when:**
 - 新项目初始化，需要文档骨架
 - 已有项目代码丰富但文档稀薄
-- 已有 CLAUDE.md 但全堆一文件，需拆分为体系
+- 已有 AGENTS.md 但全堆一文件，需拆分为体系
 
 **Skip when:**
-- 只需更新单个 CLAUDE.md 段落 → 直接 Edit
+- 只需更新单个 AGENTS.md 段落 → 直接 Edit
 - 已有完整体系，只需审计 → 用 claude-md-improver
 - 项目极小（单文件脚本） → 不必上完整体系
 
 ## Workflow
 
-三阶段，三检查点。每个 phase 用 TodoWrite 跟踪。
+三阶段，三检查点。每个 phase 使用当前 Agent 的原生任务跟踪能力记录进度。
 
 **Phase 0 — 入口分流**
 检测 cwd → 三种路径：greenfield / complete / restructure。✋ 检查点 0：用户确认走哪条。
@@ -1138,10 +1129,10 @@ description: |
 输出"假设清单"。✋ 检查点 1：用户确认假设。
 完整自检见 `references/phase-1-checklist.md`。
 
-**Phase 2 — 骨架生成**（写到 `.claude-docs-staging/`）
+**Phase 2 — 骨架生成**（写到 `.project-docs-staging/`）
 按项目类型选模板（见 `references/project-type-variants.md`），实例化 10 个 `templates/*.tmpl`：
-顶层 `CLAUDE.md`/`ARCHITECTURE.md`/`AGENTS.md`、4 个 `docs/<dir>/README.md`、2 个 exec-plan 辅助、
-**项目级 `.claude/skills/maintain-claude-docs/SKILL.md`**（核心创新）。
+顶层 `AGENTS.md`/`ARCHITECTURE.md`、4 个 `docs/<dir>/README.md`、2 个 exec-plan 辅助、
+**项目级 `.agents/skills/maintain-project-docs/SKILL.md`**（核心创新）。
 ✋ 检查点 2：用户审阅 staging → 确认后原子 mv 到正式位置。
 完整自检见 `references/phase-2-checklist.md`。
 
@@ -1168,11 +1159,11 @@ description: |
 
 | 错误 | 修正 |
 |------|------|
-| 直接覆盖现有 CLAUDE.md | 走 restructure 路径，备份 `.bak.<ts>`，逐章确认搬迁 |
+| 直接覆盖现有 AGENTS.md | 走 restructure 路径，备份 `.bak.<ts>`，逐章确认搬迁 |
 | 跳过检查点 | 三个检查点必须停下问用户，不能批量自动完成 |
-| 把架构内容写进 CLAUDE.md | 关注点分离原则——架构进 ARCHITECTURE.md |
+| 把架构内容写进 AGENTS.md | 关注点分离原则——架构进 ARCHITECTURE.md |
 | 忘记生成项目级维护 skill | Phase 2.5 必做；维护体系长期靠它 |
-| 直接写到 cwd | 必须先写 `.claude-docs-staging/`，用户确认后原子 mv |
+| 直接写到 cwd | 必须先写 `.project-docs-staging/`，用户确认后原子 mv |
 
 ## Design Philosophy
 
@@ -1183,9 +1174,9 @@ description: |
 
 ```bash
 # frontmatter 之后的正文字符数（中英混排）
-awk '/^---$/{n++; next} n==2' skills/bootstrap-claude-docs/SKILL.md | wc -m
+awk '/^---$/{n++; next} n==2' skills/bootstrap-project-docs/SKILL.md | wc -m
 # description 字段长度
-awk '/^description:/,/^---$/' skills/bootstrap-claude-docs/SKILL.md | head -c 1100 | wc -c
+awk '/^description:/,/^---$/' skills/bootstrap-project-docs/SKILL.md | head -c 1100 | wc -c
 ```
 预期：
 - 正文 ≤ 3000 字符（中文混排 ~ 500-800 词上限）
@@ -1196,26 +1187,26 @@ awk '/^description:/,/^---$/' skills/bootstrap-claude-docs/SKILL.md | head -c 11
 - [ ] **Step 3：自验 frontmatter**
 
 ```bash
-head -10 skills/bootstrap-claude-docs/SKILL.md | grep -E '^(name|description):'
+head -10 skills/bootstrap-project-docs/SKILL.md | grep -E '^(name|description):'
 ```
 预期：name 和 description 都存在。
 
 ```bash
-awk '/^---$/{n++; next} n==1' skills/bootstrap-claude-docs/SKILL.md | head -20
+awk '/^---$/{n++; next} n==1' skills/bootstrap-project-docs/SKILL.md | head -20
 ```
 预期：description 以 "Use when" 起手；不出现 "scan / generate / write" 等动词描述工作流。
 
 - [ ] **Step 4：自验 cross-reference 风格**
 
 ```bash
-grep -c '@skills/\|@\.\./skills/' skills/bootstrap-claude-docs/SKILL.md
+grep -c '@skills/\|@\.\./skills/' skills/bootstrap-project-docs/SKILL.md
 ```
 预期：0（不能用 `@` 强制加载语法）。
 
 - [ ] **Step 5：commit**
 
 ```bash
-git add skills/bootstrap-claude-docs/SKILL.md
+git add skills/bootstrap-project-docs/SKILL.md
 git commit -m "feat(skill): add main SKILL.md orchestrator"
 ```
 
@@ -1238,15 +1229,15 @@ mkdir -p commands
 
 ```markdown
 ---
-description: 为当前项目搭建或重构完整的 Claude Code 文档体系（CLAUDE.md / ARCHITECTURE.md / docs/ + 项目级维护 skill）
+description: 为当前项目搭建或重构完整的 Claude Code 文档体系（AGENTS.md / ARCHITECTURE.md / docs/ + 项目级维护 skill）
 ---
 
-请用 bootstrap-claude-docs skill 为当前工作目录搭建完整的文档体系。
+请用 bootstrap-project-docs skill 为当前工作目录搭建完整的文档体系。
 
 按 skill 定义的三阶段流程执行：
 1. Phase 0 检测项目状态并让我确认走哪条路径（greenfield / complete / restructure）
 2. Phase 1 扫描与推断，输出假设清单让我审阅
-3. Phase 2 生成骨架到 `.claude-docs-staging/`，让我审阅后再 mv 到正式位置
+3. Phase 2 生成骨架到 `.project-docs-staging/`，让我审阅后再 mv 到正式位置
 4. Phase 3 深度填充与验证
 
 每个检查点都要停下来等我确认。
@@ -1290,21 +1281,20 @@ touch tests/fixtures/empty/.gitkeep
 
 期望产出（greenfield 路径）：
 
-CLAUDE.md
-ARCHITECTURE.md
 AGENTS.md
+ARCHITECTURE.md
 docs/handover/README.md
 docs/insights/README.md
 docs/research/README.md
 docs/exec-plans/README.md
 docs/exec-plans/tech-debt-tracker.md
 docs/exec-plans/exec-plan-template.md
-.claude/skills/maintain-claude-docs/SKILL.md
+.agents/skills/maintain-project-docs/SKILL.md
 
 每个文件必含的关键标记：
-- CLAUDE.md：包含 "## 改动自查" "## 文档"
+- AGENTS.md：包含 "## 改动自查" "## 文档"
 - ARCHITECTURE.md：包含 "## 目录结构" "## 技术栈"
-- maintain-claude-docs/SKILL.md：frontmatter name 等于 maintain-claude-docs；body 含 6 项编号清单
+- maintain-project-docs/SKILL.md：frontmatter name 等于 maintain-project-docs；body 含 6 项编号清单
 ```
 
 - [ ] **Step 3：人工跑一次端到端**
@@ -1312,7 +1302,7 @@ docs/exec-plans/exec-plan-template.md
 在仓库 root 安装 skill：
 ```bash
 mkdir -p ~/.claude/skills ~/.claude/commands
-ln -sfn "$PWD/skills/bootstrap-claude-docs" ~/.claude/skills/bootstrap-claude-docs
+ln -sfn "$PWD/skills/bootstrap-project-docs" ~/.claude/skills/bootstrap-project-docs
 ln -sf "$PWD/commands/bootstrap-docs.md" ~/.claude/commands/bootstrap-docs.md
 ```
 
@@ -1327,20 +1317,20 @@ cd tests/fixtures/empty
 
 ```bash
 cd tests/fixtures/empty
-ls -1 CLAUDE.md ARCHITECTURE.md AGENTS.md \
+ls -1 AGENTS.md ARCHITECTURE.md \
        docs/handover/README.md docs/insights/README.md \
        docs/research/README.md docs/exec-plans/README.md \
        docs/exec-plans/tech-debt-tracker.md \
-       .claude/skills/maintain-claude-docs/SKILL.md \
+       .agents/skills/maintain-project-docs/SKILL.md \
   2>&1 | grep -c '^docs\|CLAUDE\|ARCH\|AGENT\|.claude'
 ```
 预期：≥ 9
 
 逐一打开关键文件确认 grep 命中：
 ```bash
-grep -l '改动自查' CLAUDE.md && \
+grep -l '改动自查' AGENTS.md && \
   grep -l '目录结构' ARCHITECTURE.md && \
-  grep -l 'maintain-claude-docs' .claude/skills/maintain-claude-docs/SKILL.md
+  grep -l 'maintain-project-docs' .agents/skills/maintain-project-docs/SKILL.md
 ```
 预期：三行均匹配成功。
 
@@ -1373,12 +1363,12 @@ git commit -m "test: add empty fixture and expected structure for smoke test"
 ```markdown
 # claude-md-guide
 
-> 为项目搭建可落地、可维护的 Claude Code 文档体系。
-> 比内置 `/init` 产出更完整：CLAUDE.md / ARCHITECTURE.md / AGENTS.md / docs/ + 项目级维护 skill。
+> 为项目搭建可落地、可维护、跨 Agent 的文档体系。
+> 以 AGENTS.md 为规则唯一真相源，并配套 ARCHITECTURE.md / docs/ + 项目级维护 Skill。
 
 ## 这个仓库提供什么
 
-- **`bootstrap-claude-docs`** — 一个 Claude Code skill，三阶段三检查点流程
+- **`bootstrap-project-docs`** — 一个跨 AI coding agent 的 Skill，三阶段三检查点流程
 - **`/bootstrap-docs`** — 对应 slash command
 - **设计哲学** —— 5 条可移植原则（关注点分离 / 双视角文档 / 自维护索引 / 计划驱动 / 自检纪律）
 
@@ -1389,14 +1379,14 @@ git commit -m "test: add empty fixture and expected structure for smoke test"
 ```bash
 git clone <this-repo> claude-md-guide
 cd claude-md-guide
-cp -r skills/bootstrap-claude-docs ~/.claude/skills/
+cp -r skills/bootstrap-project-docs ~/.claude/skills/
 cp commands/bootstrap-docs.md ~/.claude/commands/
 ```
 
 ### 方式 2：Symlink（开发者，改源即生效）
 
 ```bash
-ln -sfn "$PWD/skills/bootstrap-claude-docs" ~/.claude/skills/bootstrap-claude-docs
+ln -sfn "$PWD/skills/bootstrap-project-docs" ~/.claude/skills/bootstrap-project-docs
 ln -sf  "$PWD/commands/bootstrap-docs.md" ~/.claude/commands/bootstrap-docs.md
 ```
 
@@ -1412,7 +1402,7 @@ clone 后，跟 Claude Code 说："帮我安装这个仓库里的 skill"。
 /bootstrap-docs
 ```
 
-或自然语言："帮我搭一套完整的 CLAUDE.md 文档体系"。
+或自然语言："帮我搭一套完整的 AGENTS.md 文档体系"。
 
 skill 会带你走三阶段：
 1. 扫描项目，列假设清单让你确认
@@ -1422,9 +1412,9 @@ skill 会带你走三阶段：
 ## 文档
 
 - [docs/design.md](./docs/design.md) — 设计文档（理念、架构、决策日志）
-- [skills/bootstrap-claude-docs/SKILL.md](./skills/bootstrap-claude-docs/SKILL.md) — 主流程
-- [skills/bootstrap-claude-docs/references/design-philosophy.md](./skills/bootstrap-claude-docs/references/design-philosophy.md) — 5 大设计哲学详述
-- [skills/bootstrap-claude-docs/references/project-type-variants.md](./skills/bootstrap-claude-docs/references/project-type-variants.md) — 7 种项目类型适配
+- [skills/bootstrap-project-docs/SKILL.md](./skills/bootstrap-project-docs/SKILL.md) — 主流程
+- [skills/bootstrap-project-docs/references/design-philosophy.md](./skills/bootstrap-project-docs/references/design-philosophy.md) — 5 大设计哲学详述
+- [skills/bootstrap-project-docs/references/project-type-variants.md](./skills/bootstrap-project-docs/references/project-type-variants.md) — 7 种项目类型适配
 
 ## License
 
@@ -1461,7 +1451,7 @@ git commit -m "docs: complete README with install methods, usage, and pointers"
 ```markdown
 - [x] /bootstrap-docs 在 tests/fixtures/empty/ 上跑通（T15 已做）
 - [ ] /bootstrap-docs 在某真实项目（claude-md-guide 自身）上跑通 ← 现在做
-- [ ] 重构路径在一份"无体系的旧 CLAUDE.md"上跑通，diff 预览正确 ← 现在做
+- [ ] 重构路径在一份"无体系的旧 AGENTS.md"上跑通，diff 预览正确 ← 现在做
 - [x] 项目级 maintain-skill 在被 bootstrap 过的项目里能被加载（T15 已验）
 - [x] README.md 三种安装方式至少一种被验证（T16）
 - [x] design-philosophy.md 全文写完，每条原则四节齐全（T5）
@@ -1470,22 +1460,22 @@ git commit -m "docs: complete README with install methods, usage, and pointers"
 
 - [ ] **Step 2：在仓库自身跑一次 /bootstrap-docs**
 
-进入 `claude-md-guide/` 自身（已有 docs/ 但无 CLAUDE.md），跑 `/bootstrap-docs`，应走 complete 路径。
+进入 `claude-md-guide/` 自身（已有 docs/ 但无 AGENTS.md），跑 `/bootstrap-docs`，应走 complete 路径。
 
 预期：
 - skill 不应覆盖现有 `docs/design.md` `docs/plan.md`
-- 应生成 CLAUDE.md / ARCHITECTURE.md / AGENTS.md
-- 应生成 `.claude/skills/maintain-claude-docs/`
+- 应生成 AGENTS.md / ARCHITECTURE.md
+- 应生成 `.agents/skills/maintain-project-docs/`
 
 完成后用 `git diff` 检查；不满意 `git checkout` 回滚。
 
-- [ ] **Step 3：在一份"旧 CLAUDE.md"上跑 restructure**
+- [ ] **Step 3：在一份"旧 AGENTS.md"上跑 restructure**
 
 构造测试目录：
 ```bash
 mkdir -p /tmp/restructure-test
 cd /tmp/restructure-test
-cat > CLAUDE.md <<'EOF'
+cat > AGENTS.md <<'EOF'
 # old-project
 
 技术栈：Next.js + Postgres
@@ -1498,8 +1488,8 @@ EOF
 
 在 Claude Code 里跑 `/bootstrap-docs`，应识别为 restructure，生成 diff 预览：
 - 「技术栈」「src/api」「src/db/schema」段落 → 搬到 ARCHITECTURE.md
-- 「提交前必须跑 npm test」 → 留 CLAUDE.md
-- 备份 `CLAUDE.md.bak.<ts>` 已生成
+- 「提交前必须跑 npm test」 → 留 AGENTS.md
+- 备份 `AGENTS.md.bak.<ts>` 已生成
 
 - [ ] **Step 4：更新 CHANGELOG.md**
 
@@ -1509,12 +1499,12 @@ EOF
 ## [0.1.0] - 2026-04-29
 
 ### Added
-- bootstrap-claude-docs skill：三阶段三检查点的文档体系生成流程
+- bootstrap-project-docs skill：三阶段三检查点的文档体系生成流程
 - /bootstrap-docs slash command
 - 5 大设计哲学（design-philosophy.md）
 - 7 种项目类型变体（project-type-variants.md）
 - 3 phase 自检 checklist
-- 10 个模板（CLAUDE.md / ARCHITECTURE.md / AGENTS.md / 4×docs README / tech-debt / exec-plan / 项目级维护 skill）
+- 模板包含 AGENTS.md / ARCHITECTURE.md / docs README / tech-debt / exec-plan / 项目级维护 Skill
 - 3 份去标识化样例
 ```
 
@@ -1539,7 +1529,7 @@ git tag v0.1.0
 | T5 | 1 | 5 大设计哲学 | T1 |
 | T6 | 1 | 7 种项目变体 | T1 |
 | T7 | 3 | 去标识化样例 | T1 |
-| T8 | 1 | CLAUDE.md.tmpl | T5 |
+| T8 | 1 | AGENTS.md.tmpl | T5 |
 | T9 | 2 | ARCHITECTURE.md.tmpl + AGENTS.md.tmpl | T5 |
 | T10 | 4 | docs/ README 模板 ×4 | T5 |
 | T11 | 2 | tech-debt + exec-plan 模板 | T5 |

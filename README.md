@@ -1,15 +1,17 @@
 # claude-md-guide
 
-> 为项目搭建可落地、可维护的 Claude Code 文档体系。
-> 比内置 `/init` 产出更完整：CLAUDE.md / ARCHITECTURE.md / AGENTS.md / docs/ + 项目级维护 skill。
+> 为项目搭建可落地、可维护、跨 AI coding agent 的文档体系。
+> 以 `AGENTS.md` 为项目规则唯一真相源，并配套 `ARCHITECTURE.md`、`docs/` 和项目级维护 Skill。
+
+仓库名为历史名称，暂时保留以兼容已有链接；当前 Skill 名为 `bootstrap-project-docs`。
 
 ## 这个仓库提供什么
 
-- **`bootstrap-claude-docs` skill** — 三阶段三检查点流程，把一个项目（空的 / 已有代码的 / 已有旧 CLAUDE.md 的）引导成一整套文档体系
-- **`/bootstrap-claude-docs` slash command** — skill 自动发现的命令入口
+- **`bootstrap-project-docs` Skill** — 三阶段三检查点流程，把空项目、已有代码项目或已有旧文档的项目引导成一整套文档体系
+- **跨 Agent 安装** — 支持安装到公共 Agent Skills、Codex、Claude Code 或其他兼容客户端的 Skill 目录
 - **7 条可移植设计原则** — 关注点分离 / 决策追溯独立 / 自维护索引 / 计划驱动 / 自检纪律 / 克制 / 防漂移闭环
 - **7 种项目类型变体** — Web / CLI / Library / Service / Monorepo / Mobile / Data
-- **14 个模板 + 2 份样例** — 拿去就能填
+- **15 个模板 + 2 份样例** — 拿去就能填
 
 ## 产出什么
 
@@ -17,9 +19,8 @@
 
 ```
 项目根/
-├── CLAUDE.md                                   # 规则、流程、改动自查（≤4 核心项）
+├── AGENTS.md                                   # 规则、流程、改动自查（≤4 核心项）
 ├── ARCHITECTURE.md                             # 结构、数据流、技术栈
-├── AGENTS.md                                   # CLAUDE.md 的镜像（给非 Claude 的 AI）
 ├── docs/
 │   ├── decisions/README.md                     # 架构决策记录索引（ADR）
 │   ├── decisions/adr-template.md               # 极简 ADR 模板（标题 + 1-3 句）
@@ -31,38 +32,52 @@
 │   ├── insights/            （lazy）           # 产品思考
 │   ├── research/            （lazy）           # 调研
 │   └── source-of-truth-map.md                 # 真相源映射表（防漂移用）
-├── .claude/skills/maintain-claude-docs/
+├── .agents/skills/maintain-project-docs/
 │   └── SKILL.md                                # 项目级维护 skill —— 按需 / 阶段性文档体检
 └── .git/hooks/pre-push                         # 防漂移 hook（Phase 2.6 生成）
 ```
 
-最后那个「项目级维护 skill」是核心创新：CLAUDE.md 是静态规则文件，在长对话里偶尔被埋；项目级 skill 有 description 触发机制，形成静动双份冗余——按需 / 阶段性触发（非每次改动）。
+最后那个「项目级维护 Skill」是核心创新：`AGENTS.md` 是静态规则文件，项目级 Skill 通过 description 提供按需 / 阶段性的文档体检入口（非每次改动自动运行）。
 
 ## 安装
 
-### 方式 1：手动拷贝（最稳）
+先 clone 仓库，并把 Skill 源目录记为绝对路径：
 
 ```bash
 git clone https://github.com/Gevtolev/claude-md-guide.git
 cd claude-md-guide
-cp -r skills/bootstrap-claude-docs ~/.claude/skills/
+skill_source="$PWD/skills/bootstrap-project-docs"
 ```
 
-### 方式 2：Symlink（开发者，改源即生效）
+推荐使用软链接，`git pull` 后即可获得更新。根据实际客户端选择一个或多个安装目标：
+
+### 公共 Agent Skills 目录
 
 ```bash
-git clone https://github.com/Gevtolev/claude-md-guide.git
-cd claude-md-guide
-ln -sfn "$PWD/skills/bootstrap-claude-docs" ~/.claude/skills/bootstrap-claude-docs
+mkdir -p "$HOME/.agents/skills"
+ln -sfn "$skill_source" "$HOME/.agents/skills/bootstrap-project-docs"
 ```
 
-### 方式 3：让 Claude 帮你装
+仅适用于会发现 `~/.agents/skills/` 的客户端。
+
+### Codex
 
 ```bash
-git clone https://github.com/Gevtolev/claude-md-guide.git
+codex_skills_dir="${CODEX_HOME:-$HOME/.codex}/skills"
+mkdir -p "$codex_skills_dir"
+ln -sfn "$skill_source" "$codex_skills_dir/bootstrap-project-docs"
 ```
 
-clone 后进入仓库，跟 Claude Code 说："帮我安装这个仓库里的 skill 到 `~/.claude/skills/`"。Claude 会读 README 并自动拷贝。
+### Claude Code
+
+```bash
+mkdir -p "$HOME/.claude/skills"
+ln -sfn "$skill_source" "$HOME/.claude/skills/bootstrap-project-docs"
+```
+
+### 其他 Agent
+
+把同一个 `skill_source` 链接或复制到该 Agent 文档指定的用户级 Skill 目录。不要复制成多个长期维护的独立副本，否则版本容易漂移。
 
 ## 使用
 
@@ -72,13 +87,13 @@ clone 后进入仓库，跟 Claude Code 说："帮我安装这个仓库里的 sk
 cd ~/projects/your-project
 ```
 
-在 Claude Code 里输入 slash command：
+在支持 `$skill-name` 调用语法的 Agent 中输入：
 
 ```
-/bootstrap-claude-docs
+$bootstrap-project-docs
 ```
 
-或者用自然语言："帮我为这个项目搭一套 Claude Code 文档体系"（skill 的 description 会自动命中）。
+Claude Code 也可使用 `/bootstrap-project-docs`。或者直接说：“帮我为这个项目搭一套文档体系，以 AGENTS.md 为项目规则入口。”
 
 接下来会走三阶段：
 
@@ -86,7 +101,7 @@ cd ~/projects/your-project
 |-------|--------|----------|
 | 0 | 检测项目状态，告诉你走哪条路径（greenfield / complete / restructure） | 确认路径 |
 | 1 | 扫描代码，识别项目类型，列假设清单 | 审阅假设，修正错误推断 |
-| 2 | 按模板生成骨架到 `.claude-docs-staging/` | 审阅 staging，确认后 skill 原子 mv 到正式位置 |
+| 2 | 按模板生成骨架到 `.project-docs-staging/` | 审阅 staging，确认后 skill 原子 mv 到正式位置 |
 | 3 | 深填 ARCHITECTURE 的真实数据，校验索引完整性 | 最终确认 |
 
 每个检查点都会停下等你确认——不会一把梭哈。
@@ -95,18 +110,18 @@ cd ~/projects/your-project
 
 | 工具 | 职责 | 关系 |
 |------|------|------|
-| Claude Code 内置 `/init` | 生成单 CLAUDE.md | 本 skill 是升级版（体系化） |
-| [`claude-md-improver`](https://github.com/anthropics/claude-plugins-official) | 审计已有 CLAUDE.md | 互补：本 skill 建造，它体检 |
-| 本 skill 生成的项目级 `maintain-claude-docs` | 日常维护提醒 | 本 skill 的产物，长期生效 |
+| Agent 自带的初始化命令 | 通常只生成单一入口文件 | 本 Skill 补齐架构、决策、计划与维护体系 |
+| 本 skill 生成的项目级 `maintain-project-docs` | 日常维护提醒 | 本 skill 的产物，长期生效 |
+| Claude CLI 防漂移 hook | 提交前检查机械文档漂移 | 可选能力；没有 Claude CLI 时自动降级为人工体检 |
 
 ## 进一步阅读
 
 - [docs/design.md](./docs/design.md) — 完整设计文档（理念、架构、决策日志）
 - [docs/plan.md](./docs/plan.md) — 实现计划（17 task）
-- [skills/bootstrap-claude-docs/SKILL.md](./skills/bootstrap-claude-docs/SKILL.md) — skill 主流程
-- [skills/bootstrap-claude-docs/references/design-philosophy.md](./skills/bootstrap-claude-docs/references/design-philosophy.md) — 7 大设计哲学详述
-- [skills/bootstrap-claude-docs/references/project-type-variants.md](./skills/bootstrap-claude-docs/references/project-type-variants.md) — 7 种项目类型适配
-- [skills/bootstrap-claude-docs/references/sample-CLAUDE.md](./skills/bootstrap-claude-docs/references/sample-CLAUDE.md) / [sample-ARCHITECTURE.md](./skills/bootstrap-claude-docs/references/sample-ARCHITECTURE.md) — 去标识化样例
+- [skills/bootstrap-project-docs/SKILL.md](./skills/bootstrap-project-docs/SKILL.md) — skill 主流程
+- [skills/bootstrap-project-docs/references/design-philosophy.md](./skills/bootstrap-project-docs/references/design-philosophy.md) — 7 大设计哲学详述
+- [skills/bootstrap-project-docs/references/project-type-variants.md](./skills/bootstrap-project-docs/references/project-type-variants.md) — 7 种项目类型适配
+- [skills/bootstrap-project-docs/references/sample-AGENTS.md](./skills/bootstrap-project-docs/references/sample-AGENTS.md) / [sample-ARCHITECTURE.md](./skills/bootstrap-project-docs/references/sample-ARCHITECTURE.md) — 去标识化样例
 
 ## License
 

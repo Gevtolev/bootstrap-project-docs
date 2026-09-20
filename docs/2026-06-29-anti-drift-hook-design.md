@@ -2,12 +2,12 @@
 
 > 状态：Draft（待 review）
 > 日期：2026-06-29
-> 关联：[design.md](./design.md)（总设计）、[design-philosophy.md](../skills/bootstrap-claude-docs/references/design-philosophy.md)（拟加第 7 条）
+> 关联：[design.md](./design.md)（总设计）、[design-philosophy.md](../skills/bootstrap-project-docs/references/design-philosophy.md)（拟加第 7 条）
 > 来源：对比 OpenSpec 的文档保鲜机制后提炼（不引入 OpenSpec 工具链，只借设计思想）
 
 ## 1. 背景与问题
 
-现有 `maintain-claude-docs`（由 bootstrap 在 Phase 2.5 生成）是**按需 / 阶段性**的人主导文档体检。对照 OpenSpec 的文档保鲜机制后，暴露出 4 个结构性弱点：
+现有 `maintain-project-docs`（由 bootstrap 在 Phase 2.5 生成）是**按需 / 阶段性**的人主导文档体检。对照 OpenSpec 的文档保鲜机制后，暴露出 4 个结构性弱点：
 
 1. **漂移没人发现**：代码改了、文档没跟上，没有任何检查或闸门兜底，直到某天有人发现文档是错的。
 2. **多源重复同步累**：同一事实散落 ARCHITECTURE / PRD / decisions / 设计稿多处，改一处常忘改另一处（典型如「schema.ts / types.ts / Provider 三处必须同步」）。
@@ -125,17 +125,17 @@ maintain 模板的 checklist 第 4 项（索引）与真相源部分改注：「
 | `templates/anti-drift-hook.sh.tmpl`（新） | 可执行 hook 脚本模板（两阶段骨架，含降级分支） |
 | `SKILL.md` | 加 **Phase 2.6 — 生成项目级防漂移 hook**（检测 git / claude CLI，缺则降级） |
 | `references/design-philosophy.md` | 加**第 7 条「防漂移闭环」**，显式调和与第 5 / 6 条克制的关系 |
-| `templates/maintain-claude-docs-SKILL.md.tmpl` | 加「hook 与 maintain 分工」节；checklist 引用映射表 |
-| `templates/CLAUDE.md.tmpl` | 改动自查加一行指向映射表 / hook |
+| `templates/maintain-project-docs-SKILL.md.tmpl` | 加「hook 与 maintain 分工」节；checklist 引用映射表 |
+| `templates/AGENTS.md.tmpl` | 改动自查加一行指向映射表 / hook |
 | `references/project-type-variants.md` | 各类型补一句映射表 / hook 聚焦提示（轻量） |
 | `README.md` | 「6 条设计原则」→「7 条」；产出结构图补 hook + 映射表 |
 | `CHANGELOG.md` | 新增版本条目（建议 0.4.0） |
 
-## 8. 落地范围（两份 + 同步验证）
+## 8. 落地范围（单一 Git 源 + Agent 安装入口）
 
-- 主改：`claude-md-guide/skills/bootstrap-claude-docs/`（源仓库）。
-- 同步：`~/.claude/skills/bootstrap-claude-docs/`（全局副本，非 symlink，需手动同步）。
-- 收口：`diff -rq` 两份确认零差异（回到当前一致状态）；在 claude-md-guide 提交 + 更新 CHANGELOG。
+- 主改：`claude-md-guide/skills/bootstrap-project-docs/`（源仓库）。
+- 安装：从源仓库分别软链接到目标 Agent 的用户级 Skill 目录，例如 `~/.codex/skills/` 或 `~/.claude/skills/`。
+- 收口：验证软链接均指向 Git 源目录；在 claude-md-guide 提交并更新 CHANGELOG。
 
 ## 9. 验收：mock 项目跑通整套闭环（end-to-end）
 
@@ -154,7 +154,7 @@ maintain 模板的 checklist 第 4 项（索引）与真相源部分改注：「
 1. **软提醒 + 自动修 + 留 review**，默认不硬拦截（critical 项可选开）。
 2. **两阶段流水线**：haiku 检测（每次）/ sonnet 修复（仅漂移时），榨干「低档模型省 token」。
 3. **真相源映射表一份两用**（人看 + 检测器规则）—— 本设计的核心创新。
-4. **改源 + 同步全局副本**，diff 验证一致。
+4. **只改 Git 源 + 验证安装软链接**，避免多份副本漂移。
 5. spec / 产物归属 `claude-md-guide`，遵循其扁平 `docs/` 惯例。
 
 ## 11. 风险与未决

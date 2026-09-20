@@ -1,4 +1,4 @@
-# bootstrap-claude-docs — 设计文档
+# bootstrap-project-docs — 设计文档
 
 > 创建时间：2026-04-29
 > 作者：小天
@@ -6,34 +6,35 @@
 
 ## 1. 概述
 
-**bootstrap-claude-docs** 是一个 Claude Code skill，指导 Claude 为目标项目生成一整套**可落地、可维护**的文档体系，比内置 `/init` 命令的产出更完整、更结构化。
+**bootstrap-project-docs** 是一个跨 AI coding agent 的 Skill，指导 Agent 为目标项目生成一整套**可落地、可维护**的文档体系，以 `AGENTS.md` 为项目规则唯一真相源。
 
-灵感来源是 [insilico-pilot](https://github.com/Gevtolev/insilico-pilot) 项目的文档实践，提炼了 6 条可移植的设计哲学：
+灵感来源是 [insilico-pilot](https://github.com/Gevtolev/insilico-pilot) 项目的文档实践，提炼了 7 条可移植的设计哲学：
 
-1. **关注点分离**：CLAUDE.md（规则） / ARCHITECTURE.md（结构） / docs/（深度）
+1. **关注点分离**：AGENTS.md（规则） / ARCHITECTURE.md（结构） / docs/（深度）
 2. **决策追溯独立**：架构/产品决策独立到 `docs/decisions/`（ADR 格式），不混在其他目录
 3. **自维护索引**：每个 docs/<dir>/README.md 是入口，新增长期文档时同步（脚手架/空目录不维护索引）
 4. **计划驱动（粗粒度）**：中大型功能进 exec-plans/active/，完成后移到 completed/；不逐行复述实现
-5. **自检纪律（精简）**：CLAUDE.md 自带 ≤4 条核心「改动自查」+ 项目级维护 skill 按需触发
+5. **自检纪律（精简）**：AGENTS.md 自带 ≤4 条核心「改动自查」+ 项目级维护 skill 按需触发
 6. **克制**：只记「将来真会回头查」的——难逆转 + 非显而易见的决策；文档为回查服务，不为完整性
+7. **防漂移闭环**：用真相源映射表和可选 hook 发现机械文档漂移
 
 ### 1.1 与现有工具的关系
 
 | 工具 | 职责 | 与本 skill 的关系 |
 |------|------|------|
-| Claude Code `/init` | 一次性生成单文件 CLAUDE.md | 本 skill 的"超集"——产出整套体系 |
-| `claude-md-improver` skill | 周期性审计 CLAUDE.md 是否落后于代码 | 互补——improver 做日常体检，本 skill 做创建/重构 |
+| Agent 自带的初始化命令 | 通常只生成单一入口文件 | 本 Skill 的“超集”——产出整套体系 |
+| 项目级 `maintain-project-docs` Skill | 按需审计文档是否落后于代码 | 本 Skill 负责创建/重构，它负责后续维护 |
 | 本 skill | 创建 / 补全 / 重构整套文档体系 | — |
 
 ## 2. 用户故事
 
 | 编号 | 场景 | 用户输入 | 期望产出 |
 |------|------|----------|----------|
-| US-1 | 空项目初始化 | `/bootstrap-claude-docs` 在新建空目录里 | 完整骨架（占位 + TODO），让用户跟着填 |
-| US-2 | 已有项目补全 | `/bootstrap-claude-docs` 在已有代码、缺文档的项目里 | 扫描代码后推断架构，生成顶层文件 + docs/ 子目录索引 |
-| US-3 | 重构已有 CLAUDE.md | `/bootstrap-claude-docs` 在已有 CLAUDE.md 但不符合体系的项目 | 拆分 CLAUDE.md → ARCHITECTURE.md + 规则段落，备份原文件 |
+| US-1 | 空项目初始化 | `/bootstrap-project-docs` 在新建空目录里 | 完整骨架（占位 + TODO），让用户跟着填 |
+| US-2 | 已有项目补全 | `/bootstrap-project-docs` 在已有代码、缺文档的项目里 | 扫描代码后推断架构，生成顶层文件 + docs/ 子目录索引 |
+| US-3 | 重构已有 AGENTS.md | `/bootstrap-project-docs` 在已有 AGENTS.md 但不符合体系的项目 | 拆分 AGENTS.md → ARCHITECTURE.md + 规则段落，备份原文件 |
 | US-4 | 自动触发（非显式） | "帮我搭一套像 insilico-pilot 那样的文档结构" | skill description 命中，自动进入 Phase 0 |
-| US-5 | 安装后日常维护 | 用户在被 bootstrap 过的项目里写新功能 | 项目级 `maintain-claude-docs` skill 自动提醒该写哪份文档 |
+| US-5 | 安装后日常维护 | 用户在被 bootstrap 过的项目里写新功能 | 项目级 `maintain-project-docs` skill 自动提醒该写哪份文档 |
 
 ## 3. 仓库结构与发布约定
 
@@ -44,7 +45,7 @@ claude-md-guide/
 ├── README.md                                  # 项目介绍 + 安装方式 + 使用示例
 ├── LICENSE                                     # MIT
 ├── skills/
-│   └── bootstrap-claude-docs/                  # ↔ ~/.claude/skills/bootstrap-claude-docs/
+│   └── bootstrap-project-docs/                  # 安装到当前 Agent 的用户级 Skill 目录
 │       ├── SKILL.md                            # 主流程，≤ 500 词（社区惯例）
 │       ├── references/                         # 深度文档（被 SKILL.md 按需引用）
 │       │   ├── design-philosophy.md            # 6 大设计哲学详述
@@ -52,10 +53,9 @@ claude-md-guide/
 │       │   ├── phase-1-checklist.md            # 扫描完成判定标准
 │       │   ├── phase-2-checklist.md            # 骨架完整性检查
 │       │   ├── phase-3-checklist.md            # 内容质量门
-│       │   ├── sample-CLAUDE.md                # 去标识化样例
+│       │   ├── sample-AGENTS.md                # 去标识化样例
 │       │   └── sample-ARCHITECTURE.md
 │       └── templates/                          # 顶层 templates/，符合社区惯例
-│           ├── CLAUDE.md.tmpl
 │           ├── ARCHITECTURE.md.tmpl
 │           ├── AGENTS.md.tmpl
 │           ├── docs-decisions-README.tmpl
@@ -67,8 +67,8 @@ claude-md-guide/
 │           ├── tech-debt-tracker.tmpl
 │           ├── exec-plan.tmpl                  # 含 Blocked by 依赖 + 链接不复制
 │           ├── ignore.tmpl
-│           ├── sub-package-CLAUDE.md.tmpl
-│           └── maintain-claude-docs-SKILL.md.tmpl   # 目标项目里的维护 skill 模板
+│           ├── sub-package-AGENTS.md.tmpl
+│           └── maintain-project-docs-SKILL.md.tmpl   # 目标项目里的维护 skill 模板
 ├── tests/
 │   └── fixtures/                               # 第二期添加（参考第 10.2 节）
 │       ├── empty/
@@ -79,48 +79,44 @@ claude-md-guide/
 └── CHANGELOG.md
 ```
 
-仓库的 `skills/` 镜像 `~/.claude/skills/` 的目录结构，安装即 1:1 拷贝。
+仓库中的 `skills/bootstrap-project-docs/` 是唯一发布源。用户把它软链接或复制到当前 Agent 的用户级 Skill 目录。
 
 ### 3.2 安装方式
 
-README 提供三种装法：
+README 提供公共 Agent Skills、Codex、Claude Code 和其他 Agent 的安装目标；推荐软链接，避免多份副本漂移。示例：
 
 ```bash
-# 1. 手动拷贝（最稳）
-cp -r skills/bootstrap-claude-docs ~/.claude/skills/
-
-# 2. Symlink（开发者，改源即生效）
-ln -s "$PWD/skills/bootstrap-claude-docs" ~/.claude/skills/bootstrap-claude-docs
-
-# 3. 让 Agent 自己装
-# 在 Claude Code 里说："帮我安装这个仓库里的 skill"
+skill_source="$PWD/skills/bootstrap-project-docs"
+codex_skills_dir="${CODEX_HOME:-$HOME/.codex}/skills"
+mkdir -p "$codex_skills_dir"
+ln -sfn "$skill_source" "$codex_skills_dir/bootstrap-project-docs"
 ```
 
-不提供 install.sh——遵循 Claude Code skill 社区惯例（拷贝即用）。
+不提供 install.sh；不同 Agent 的发现目录不同，README 明确列出目标目录与同源软链接方式。
 
 ### 3.3 触发协同
 
 | 方式 | 触发点 |
 |------|--------|
-| Slash command | 用户输入 `/bootstrap-claude-docs` |
-| Description 自动触发 | SKILL.md 的 description 命中 "initialize project docs" / "create CLAUDE.md system" / "搭建文档体系" / "初始化文档" 等关键词 |
-| 明示调用 | "用 bootstrap-claude-docs skill" |
+| 显式 Skill 调用 | 用户输入 `$bootstrap-project-docs`；Claude Code 可用 `/bootstrap-project-docs` |
+| Description 自动触发 | SKILL.md 的 description 命中 "initialize project docs" / "create AGENTS.md system" / "搭建文档体系" / "初始化文档" 等关键词 |
+| 明示调用 | "用 bootstrap-project-docs skill" |
 
 ## 3.4 SKILL.md 自身格式约束（社区规范）
 
-遵循 [Claude Code skill 社区写作规范](https://agentskills.io/specification) 与 superpowers/writing-skills 指南：
+遵循 [Agent Skills 规范](https://agentskills.io/specification)：
 
 **Frontmatter 字段**：
 
 ```yaml
 ---
-name: bootstrap-claude-docs
+name: bootstrap-project-docs
 description: |
   Use when initializing, creating, restructuring, or scaffolding a project's documentation
-  system for Claude Code — covering CLAUDE.md, ARCHITECTURE.md, AGENTS.md, and docs/
-  subdirectories. Use when user says: 初始化文档体系, 搭建 CLAUDE.md 体系, 建立项目文档框架,
-  bootstrap project docs, scaffold CLAUDE.md system. Use also when /init output feels too thin
-  or when an existing CLAUDE.md needs restructuring into a multi-file system.
+  system for AI coding agents — covering AGENTS.md, ARCHITECTURE.md, and docs/
+  subdirectories. Use when user says: 初始化文档体系, 搭建 AGENTS.md 体系, 建立项目文档框架,
+  bootstrap project docs, scaffold AGENTS.md system. Use also when an agent's init output feels
+  too thin or when existing project guidance needs restructuring into a multi-file system.
 ---
 ```
 
@@ -128,7 +124,7 @@ description: |
 
 | 约束 | 原因 |
 |------|------|
-| description 只写**何时用**，不摘要工作流 | 摘要 workflow 会让 Claude 跳过读 SKILL.md，直接按 description 操作。多次社区测试已证 |
+| description 只写**何时用**，不摘要工作流 | 避免 Agent 只按 description 操作而不读取完整 Skill |
 | description 第三人称，"Use when..." 起手 | 注入到系统提示，统一句式 |
 | 总长度 ≤ 1024 字符 | 平台限制 |
 | name 仅含字母/数字/连字符 | 与 slash command 命名规则一致 |
@@ -138,7 +134,7 @@ description: |
 **SKILL.md 正文骨架（占位）**：
 
 ```markdown
-# Bootstrap Claude Docs
+# Bootstrap Project Docs
 
 ## Overview
 （1-2 句核心原则）
@@ -161,7 +157,7 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
 
 ## 4. 工作流
 
-三个 Phase，三个检查点，每次对话都在检查点处暂停等用户确认。每个 Phase 开始时，把 `checklists/phase-N.md` 转成 TodoWrite 项跟踪。
+三个 Phase，三个检查点，每次对话都在检查点处暂停等用户确认。每个 Phase 开始时，使用当前 Agent 的原生任务跟踪能力记录进度。
 
 ### 4.1 Phase 0：入口分流
 
@@ -169,7 +165,8 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
 ┌─────────────────────────────────────────────────┐
 │ 检测 cwd 状态：                                   │
 │  - 是否空目录（仅含 .git）？                       │
-│  - 是否已有 CLAUDE.md / AGENTS.md / ARCHITECTURE.md？│
+│  - 是否已有 AGENTS.md / ARCHITECTURE.md？          │
+│  - 是否有旧 CLAUDE.md 需要一次性迁移？             │
 │  - 是否已有部分 docs/ 子目录？                     │
 │  → 三种路径：greenfield / complete / restructure │
 └─────────────────────────────────────────────────┘
@@ -185,7 +182,7 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
 | 1.1 | 项目类型识别 | 读 package.json / pyproject.toml / Cargo.toml / go.mod / Gemfile 等 |
 | 1.2 | 主语言识别 | 读 README + 抽样代码注释；若 ≥ 1 个中文 README/注释比例高 → 中文，否则 ask |
 | 1.3 | 关键模块推断 | 列目录、识别 src/ / lib/ / app/ / cmd/ 等入口结构 |
-| 1.4 | 现有文档清点 | grep `**/CLAUDE.md` `**/AGENTS.md` `docs/**` `README*` |
+| 1.4 | 现有文档清点 | 搜索 `**/AGENTS.md`、`**/ARCHITECTURE.md`、`docs/**`、`README*`；旧 `CLAUDE.md` 仅作迁移输入 |
 | 1.5 | 输出扫描报告 | 项目类型 / 推断架构 / 缺口清单 / **假设列表** |
 
 ```
@@ -202,15 +199,15 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
 | 步骤 | 产出 |
 |------|------|
 | 2.1 选模板变体 | 根据 Phase 1 类型选 `templates/<variant>.tmpl` |
-| 2.2 顶层文件 | CLAUDE.md / ARCHITECTURE.md / AGENTS.md（CLAUDE.md 必含「改动自查」≤4 核心项 +「文档索引」+「工作流」段落） |
+| 2.2 顶层文件 | AGENTS.md / ARCHITECTURE.md（AGENTS.md 必含「改动自查」≤4 核心项 +「文档索引」+「工作流」段落） |
 | 2.3 核心 docs | docs/decisions/（README + adr-template）、docs/exec-plans/（README + tech-debt-tracker + exec-plan-template） |
 | 2.4 lazy 目录 | docs/glossary.md / insights/ / research/ **不预建**，首次有内容才创建 |
-| 2.5 ★ 项目级维护 skill | 在**目标项目**里生成 `.claude/skills/maintain-claude-docs/SKILL.md`（与本 skill 的源仓库无关），description 适配项目类型，按需 / 阶段性触发 |
+| 2.5 ★ 项目级维护 skill | 在**目标项目**里生成 `.agents/skills/maintain-project-docs/SKILL.md`（与本 skill 的源仓库无关），description 适配项目类型，按需 / 阶段性触发 |
 
-> **Staging 时序**：步骤 2.1–2.5 全部先写到目标项目下的 `.claude-docs-staging/` 临时目录，**不直接落盘**到最终位置。
+> **Staging 时序**：步骤 2.1–2.5 全部先写到目标项目下的 `.project-docs-staging/` 临时目录，**不直接落盘**到最终位置。
 
 ```
-              ★ 检查点 2：用户审阅 .claude-docs-staging/ 里的骨架
+              ★ 检查点 2：用户审阅 .project-docs-staging/ 里的骨架
                 - 标注哪些章节让 skill 深填
                 - 标注哪些章节自己写
                 - 标注哪些子目录不需要（删除）
@@ -225,10 +222,10 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
 | 3.1 深推断 | 对用户在检查点 2 标注的章节读源码、grep、推数据流 |
 | 3.2 ARCHITECTURE 真实化 | 「目录结构 / 数据流 / 技术栈」用扫描数据填充，不再占位 |
 | 3.3 索引校验 | decisions/README 决策矩阵与文件对齐；每个**已创建**的 docs/<dir>/README.md 与目录内文件对齐 |
-| 3.4 lazy 校验 | 未预建任何空的 lazy 目录（glossary / insights / research 无内容则不应存在）；CLAUDE.md 文档索引里 lazy 项已标「可选」 |
+| 3.4 lazy 校验 | 未预建任何空的 lazy 目录（glossary / insights / research 无内容则不应存在）；AGENTS.md 文档索引里 lazy 项已标「可选」 |
 | 3.5 输出使用指南 | 终端打印「日常如何维护这套体系」简短卡片 |
 
-> **若用户在检查点 2 没标任何章节**：跳过 3.1，仍执行 3.2–3.5（保留骨架的占位符 + TODO，后续靠 maintain-claude-docs 填）。
+> **若用户在检查点 2 没标任何章节**：跳过 3.1，仍执行 3.2–3.5（保留骨架的占位符 + TODO，后续靠 maintain-project-docs 填）。
 
 ```
               ★ 检查点 3：用户最终确认
@@ -236,18 +233,19 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
                 - 全通过 → 完成
 ```
 
-## 5. 6 大设计哲学（详见 references/design-philosophy.md）
+## 5. 7 大设计哲学（详见 references/design-philosophy.md）
 
 每条原则在 references 文档里都附 **做什么 / 反例 / 为什么 / 怎么落到模板** 四节。
 
 | # | 名称 | 一句话 |
 |---|------|--------|
-| 1 | 关注点分离 | CLAUDE.md 不写架构，ARCHITECTURE.md 不写规则，docs/ 不写流程 |
+| 1 | 关注点分离 | AGENTS.md 不写架构，ARCHITECTURE.md 不写规则，docs/ 不写流程 |
 | 2 | 决策追溯独立 | 架构/产品决策进 `docs/decisions/`（ADR 格式），不混在其他目录 |
 | 3 | 自维护索引 | 每个 docs 子目录的 README.md 是它的索引；只为长期文档维护，脚手架/空目录不建 |
 | 4 | 计划驱动（粗粒度） | 中大型功能进 exec-plans，记 phases + 状态 + 决策，不逐行复述实现 |
-| 5 | 自检纪律（精简） | CLAUDE.md ≤4 条核心自查 + 一行软提示；维护 skill 按需触发，非每改动 |
+| 5 | 自检纪律（精简） | AGENTS.md ≤4 条核心自查 + 一行软提示；维护 skill 按需触发，非每改动 |
 | 6 | 克制 | 只记「将来真会回头查」的——难逆转 + 非显而易见；文档为回查服务，不为完整性 |
+| 7 | 防漂移闭环 | 以映射表发现机械漂移；可用 Claude CLI 时启用软提醒 hook |
 
 ## 6. 项目类型变体（references/project-type-variants.md）
 
@@ -257,20 +255,20 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
 | CLI 工具 | bin 入口 / cobra / click / commander | 命令树 / IO 协议 / 配置加载 | decisions + research + exec-plans（默认无 insights） |
 | 库 / SDK | 主导出 / 多版本支持 | 公共 API 表面 / 版本兼容矩阵 / 扩展点 | decisions + research + exec-plans |
 | 后端服务 | Dockerfile + 长进程 | 服务边界 / 队列 / 数据流 / SLO | 全 4 类 |
-| Monorepo | workspaces / lerna / nx / turborepo | 工作区图 / 包依赖图 / 发布流 | 顶层 + 每包轻量 CLAUDE.md |
+| Monorepo | workspaces / lerna / nx / turborepo | 工作区图 / 包依赖图 / 发布流 | 顶层 + 每包轻量 AGENTS.md |
 | 移动 App | iOS / Android / RN / Flutter | 平台分支 / 状态管理 / 原生桥 | decisions + insights + exec-plans |
 | 数据 / Notebook | .ipynb 多 / DAG 文件 | Pipeline DAG / 数据契约 / 实验记录 | research 比 insights 重要 |
 
 ## 7. 项目级维护 skill（核心创新）
 
-bootstrap-claude-docs 在 Phase 2.5 会在**目标项目**（不是源仓库）里生成 `.claude/skills/maintain-claude-docs/SKILL.md`。这是一个**项目级**（project-scoped）skill，会随项目入 git，在那个项目内对所有协作者生效。该 skill 的作用：**让那个项目之后的每次 Claude 会话都能自动想起来维护文档体系**。
+bootstrap-project-docs 在 Phase 2.5 会在**目标项目**（不是源仓库）里默认生成 `.agents/skills/maintain-project-docs/SKILL.md`。这是一个**项目级** Skill，会随项目进入 Git；当前 Agent 使用不同项目级目录时，应先向用户说明并采用其官方目录。
 
 ```yaml
 ---
-name: maintain-claude-docs
+name: maintain-project-docs
 description: |
   Use when adding a new feature, fixing a bug, completing an exec-plan, finding tech debt,
-  or modifying files in src/. Reminds Claude to update the documentation system
+  or modifying files in src/. Reminds the agent to update the documentation system
   (decisions/ADRs, insights, research, exec-plans, README indexes, tech debt tracker).
 ---
 ```
@@ -284,20 +282,20 @@ description: |
 5. 发现技术债务 → 进 `docs/exec-plans/tech-debt-tracker.md` 了吗？
 6. 中大型功能开工 → 起 `docs/exec-plans/active/<topic>.md` 了吗？
 7. 完成 exec-plan → 移到 `completed/` 了吗？
-8. 季度审计 → CLAUDE.md 是否有过时规则需清理？
+8. 季度审计 → AGENTS.md 是否有过时规则需清理？
 
 清单内容由 bootstrap 时根据项目变体定制（Library 类型项目 description 改为"修改公共 API 表面时"等）。
 
-## 8. 重构路径（restructure existing CLAUDE.md）
+## 8. 重构路径（restructure existing AGENTS.md）
 
 适用 US-3。流程：
 
-1. 读现有 CLAUDE.md，按段落语义分类：
-   - **规则 / 流程类** → 留在 CLAUDE.md
+1. 读现有 AGENTS.md，按段落语义分类：
+   - **规则 / 流程类** → 留在 AGENTS.md
    - **架构 / 数据流 / 技术栈** → 搬 ARCHITECTURE.md
    - **某具体功能详解** → 模块级深入由 ARCHITECTURE.md 或代码 docstring 承担
 2. 输出 diff 预览给用户（每段去哪一目了然）
-3. 备份原文件 `CLAUDE.md.bak.<timestamp>`
+3. 备份原文件 `AGENTS.md.bak.<timestamp>`
 4. 执行迁移
 5. 走标准 Phase 2/3 后续步骤补齐缺失的部分
 
@@ -309,10 +307,10 @@ description: |
 |------|------|
 | 现有 ARCHITECTURE.md | 不覆盖；展示差异并提示用户合并 |
 | Monorepo 多 package | 先处理根层，子包下沉为 follow-up（不阻塞） |
-| 用户拒绝某些产出（如不要 insights） | 跳过；CLAUDE.md 显式注明"该项目不维护 insights" |
-| 生成失败 | 原子化——先全写到 `.claude-docs-staging/`，全部成功才 mv |
+| 用户拒绝某些产出（如不要 insights） | 跳过；AGENTS.md 显式注明"该项目不维护 insights" |
+| 生成失败 | 原子化——先全写到 `.project-docs-staging/`，全部成功才 mv |
 | 国际化 | 模板用 `{{...}}` 占位；按检测到的项目语言填中/英 |
-| 用户已有 `.claude/skills/maintain-claude-docs/` | 提示并 ask：覆盖 / 合并 / 跳过 |
+| 用户已有 `.agents/skills/maintain-project-docs/` | 提示并 ask：覆盖 / 合并 / 跳过 |
 | Git 未初始化 | 不强制 git init；只在文件层面工作；提示用户后续可 git init |
 
 ## 10. 测试与验证
@@ -343,11 +341,11 @@ description: |
 
 ## 11. 验收标准（首版发布门）
 
-- [ ] `/bootstrap-claude-docs` 在 `tests/fixtures/empty/` 上跑通，产出符合 phase-3 checklist
-- [ ] `/bootstrap-claude-docs` 在某真实 Next.js 项目（claude-md-guide 自身）上跑通
-- [ ] 重构路径在一份"无体系的旧 CLAUDE.md"上跑通，diff 预览正确
-- [ ] 生成的项目级 maintain-skill 在被 bootstrap 过的项目里能被 Claude Code 加载并自动触发
-- [ ] README.md 的三种安装方式至少有一种被验证
+- [ ] `/bootstrap-project-docs` 在 `tests/fixtures/empty/` 上跑通，产出符合 phase-3 checklist
+- [ ] `/bootstrap-project-docs` 在某真实 Next.js 项目（claude-md-guide 自身）上跑通
+- [ ] 重构路径在一份"无体系的旧 AGENTS.md"上跑通，diff 预览正确
+- [ ] 生成的项目级维护 Skill 在被 bootstrap 过的项目里能被目标 Agent 加载并触发
+- [ ] README.md 中至少一种安装方式已验证
 - [ ] design-philosophy.md 全文写完，每条原则四节齐全
 - [ ] project-type-variants.md 7 种变体都有最简模板差异
 
@@ -355,20 +353,21 @@ description: |
 
 - **不做**：跨语言文档同步（用户改了 ARCHITECTURE.md 中文版，自动同步英文版）
 - **不做**：周期性体检（已有 `claude-md-improver` 负责）
-- ~~**未来**：多 package monorepo 子包级 CLAUDE.md 自动生成~~ ✅ v0.2.0 已实现（sub-package-CLAUDE.md.tmpl）
-- **未来**：与 git hooks 集成（commit 前自动跑 maintain-claude-docs 清单）
+- ~~**未来**：多 package monorepo 子包级 AGENTS.md 自动生成~~ ✅ v0.2.0 已实现（sub-package-AGENTS.md.tmpl）
+- **未来**：与 git hooks 集成（commit 前自动跑 maintain-project-docs 清单）
 - **未来**：把 design-philosophy.md 翻成英文版给国际用户用
 
 ## 13. 决策日志
 
 | 日期 | 决策 | 原因 |
 |------|------|------|
-| 2026-04-29 | 不提供 install.sh | 不符合 [Claude Code skill 社区惯例](https://www.skillsdirectory.com/docs/installing-skills)，agent 自身可代装 |
-| 2026-04-29 | 双轨维护：CLAUDE.md + 项目级 skill | 单纯 CLAUDE.md 在大上下文下偶尔被忽略；项目级 skill 通过 description 主动触发更稳 |
+| 2026-04-29 | 不提供 install.sh | Agent 自身可按其 Skill 发现目录完成安装 |
+| 2026-04-29 | 双轨维护：AGENTS.md + 项目级 skill | 单纯 AGENTS.md 在大上下文下偶尔被忽略；项目级 skill 通过 description 主动触发更稳 |
 | 2026-04-29 | 模板用 `{{...}}` + 项目类型变体表 | 既保持设计哲学统一，又不强迫所有项目长得一样 |
 | 2026-04-29 | Phase 2 用 staging tmp 目录 | 失败原子回滚，不污染用户项目 |
-| 2026-04-29 | 重构路径走逐章节确认而非批量 | CLAUDE.md 是项目"心脏"，错搬一段成本高 |
+| 2026-04-29 | 重构路径走逐章节确认而非批量 | AGENTS.md 是项目"心脏"，错搬一段成本高 |
 | 2026-04-29 | 用户可见产物不引用 insilico-pilot | design.md 是 meta 文档可保留参考；README.md / SKILL.md / templates / examples 全部去标识化，避免泄露真实项目并保持 skill 通用 |
 | 2026-04-29 | skill 目录改为顶层 `references/` + 顶层 `templates/`，去掉 `checklists/` 顶层 | 遵循 [社区惯例](https://agentskills.io/specification)：约定顶层只有 references/ scripts/ templates/ assets/ 四种；checklists 归入 references/ |
 | 2026-04-29 | description 只写"何时用"不摘要工作流 | superpowers/writing-skills 实测：description 摘要 workflow 会让 Claude 跳过读 SKILL.md。同时 description ≤ 1024 字符 |
 | 2026-04-29 | SKILL.md 正文 ≤ 500 词 | Token 效率；深内容下沉 references/。引用其他 skill 用名字不用 @ 路径，避免强制加载 200k 上下文 |
+| 2026-09-20 | 项目规则统一为 AGENTS.md；Skill 改名为 bootstrap-project-docs | Claude Code 已支持 AGENTS.md，单一真相源可消除双文件同步漂移，并让同一 Skill 服务不同 Agent |

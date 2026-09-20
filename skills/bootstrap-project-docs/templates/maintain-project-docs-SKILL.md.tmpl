@@ -1,5 +1,5 @@
 ---
-name: maintain-claude-docs
+name: maintain-project-docs
 description: |
   On-demand / periodic documentation audit for this project. Use when the user explicitly
   asks to update or audit docs ("更新文档" / "文档体检"), or at a milestone (a phase wraps
@@ -8,7 +8,7 @@ description: |
   reversal-resistant, non-obvious decisions.
 ---
 
-# Maintain Claude Docs
+# Maintain Project Docs
 
 确保本项目的文档体系与代码改动同步演进。
 
@@ -18,7 +18,7 @@ description: |
 - 阶段性节点（功能收尾、发版前）做一次文档体检
 - 产生了**难逆转 + 没上下文会困惑 + 真有取舍**的关键决策（即时记一条 ADR）
 
-**不要**在每次普通改动后都跑——日常改动只走 CLAUDE.md 的精简改动自查即可。
+**不要**在每次普通改动后都跑——日常改动只走 AGENTS.md 的精简改动自查即可。
 
 ## 与防漂移 hook 的分工
 
@@ -42,7 +42,7 @@ description: |
 5. **是否发现了技术债务？** → 已添加到 `docs/exec-plans/tech-debt-tracker.md` 了吗？
 6. **是否在做中大型功能？** → 已起 `docs/exec-plans/active/<topic>.md` 了吗？
 7. **是否完成了 exec-plan？** → 已移到 `docs/exec-plans/completed/` 了吗？
-8. **季度审计**：CLAUDE.md 中是否有因模型/工具演进而过时的规则？每 3 个月回顾一次，移除已不需要的约束。
+8. **季度审计**：AGENTS.md 中是否有因模型/工具演进而过时的规则？每 3 个月回顾一次，移除已不需要的约束。
 
 ## How to Apply
 
@@ -55,7 +55,7 @@ description: |
 - Web 应用：API 改动是否同步了 OpenAPI 文档？
 - CLI 工具：新命令是否更新了 README 命令表？
 - 库：API 改动是否标记了 SemVer 影响等级？
-- Monorepo：新增子包后是否同步了子包 CLAUDE.md？
+- Monorepo：新增子包后是否同步了子包 AGENTS.md？
 - 所有类型：.ignore 是否需要更新（新增了生成文件/大型资产）？
 - 所有类型：只记「难逆转 + 没上下文会困惑 + 真有取舍」的决策；ADR 默认 1-3 句，不写文件路径/行号/代码（会过时）
 - 所有类型：新术语/黑话定型后，在 `docs/glossary.md` 记一条（无则首次创建）；定义"是什么"不是"做什么"

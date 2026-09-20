@@ -1,16 +1,16 @@
 # 设计哲学
 
-bootstrap-claude-docs 的可移植原则。每条都附「做什么 / 反例 / 为什么 / 怎么落到模板」。
+bootstrap-project-docs 的可移植原则。每条都附「做什么 / 反例 / 为什么 / 怎么落到模板」。
 
 ## 1. 关注点分离（Separation of Concerns）
 
-**做什么**：CLAUDE.md 写规则与流程；ARCHITECTURE.md 写结构与数据流；docs/ 写深度。三者职责互斥。
+**做什么**：AGENTS.md 写规则与流程；ARCHITECTURE.md 写结构与数据流；docs/ 写深度。三者职责互斥。
 
-**反例**：把目录结构、数据流图、API 列表全塞进 CLAUDE.md，文件膨胀到 800 行 → AI 读不完，规则被深埋。
+**反例**：把目录结构、数据流图、API 列表全塞进 AGENTS.md，文件膨胀到 800 行 → AI 读不完，规则被深埋。
 
-**为什么**：CLAUDE.md 自动注入每次会话上下文；越短越容易被完整读到。架构会随代码漂移；放进 ARCHITECTURE.md 才能由专门的 audit 流程同步。
+**为什么**：AGENTS.md 自动注入每次会话上下文；越短越容易被完整读到。架构会随代码漂移；放进 ARCHITECTURE.md 才能由专门的 audit 流程同步。
 
-**怎么落到模板**：`CLAUDE.md.tmpl` 严禁出现"目录结构 / 数据库 schema / API 路由表"段落；这些段落只在 `ARCHITECTURE.md.tmpl`。
+**怎么落到模板**：`AGENTS.md.tmpl` 严禁出现"目录结构 / 数据库 schema / API 路由表"段落；这些段落只在 `ARCHITECTURE.md.tmpl`。
 
 **附 · 术语层**：项目的"领域语言"自成一层——`docs/glossary.md`（`glossary.tmpl`），用 `术语: 一句定义 + _Avoid_: 禁用同义词` 统一黑话，让命名一致、AI 导航更准。它是**术语表，仅此而已**（不写实现、不当 spec）。可选 + lazy：有领域术语才建。⚠️ 注意绑定**代码 / 决策**而非"从某次对话刮取"——后者会与代码漂移（这是同类做法常见的坑）。
 
@@ -50,13 +50,13 @@ bootstrap-claude-docs 的可移植原则。每条都附「做什么 / 反例 / �
 
 ## 5. 自检纪律（Self-Check Discipline）
 
-**做什么**：CLAUDE.md 自带**精简**的「改动自查」清单（≤4 条核心，如 UI / 计算 / secret / 关键决策），其余写成一行「软提示·按需」；项目级 maintain-claude-docs skill 作为**按需 / 阶段性**的文档体检入口，不在每次改动后自动跑。
+**做什么**：AGENTS.md 自带**精简**的「改动自查」清单（≤4 条核心，如 UI / 计算 / secret / 关键决策），其余写成一行「软提示·按需」；项目级 maintain-project-docs skill 作为**按需 / 阶段性**的文档体检入口，不在每次改动后自动跑。
 
 **反例**：① 规则散落在 commit message / PR 模板 / wiki → AI 看不到，每次要人提醒。② 反向过度——自查列 9 条、skill 每次提交都跑，一个小改动触发一堆文档维护，纯烧 token。
 
-**为什么**：CLAUDE.md 是项目入口，核心约束写这里才稳；但清单越长越没人逐条走，skill 跑得越勤维护成本越高。核心项必查 + 其余按需，才可持续。
+**为什么**：AGENTS.md 是项目入口，核心约束写这里才稳；但清单越长越没人逐条走，skill 跑得越勤维护成本越高。核心项必查 + 其余按需，才可持续。
 
-**怎么落到模板**：`CLAUDE.md.tmpl` 的 `## 改动自查` 默认只给 ≤4 核心项 + 一行软提示；`maintain-claude-docs-SKILL.md.tmpl` 默认按需触发、ADR 只记难逆转 + 非显而易见的决策。
+**怎么落到模板**：`AGENTS.md.tmpl` 的 `## 改动自查` 默认只给 ≤4 核心项 + 一行软提示；`maintain-project-docs-SKILL.md.tmpl` 默认按需触发、ADR 只记难逆转 + 非显而易见的决策。
 
 ## 6. 克制：文档为回查服务，不为完整性（Restraint）
 
@@ -78,7 +78,7 @@ bootstrap-claude-docs 的可移植原则。每条都附「做什么 / 反例 / �
 
 **与第 5 / 6 条（克制）的关系**：不冲突——**触发点 = 提交**（非每次改动，无漂移直接放行，几乎零成本）；**执行者 = 低档模型**（不占用人的注意力）；**默认软提醒**（改动留工作区、绝不硬拦 push）。它只兜「机械漂移」，把「该不该记 ADR、季度审计、结构重组」这类判断仍留给人主导的 maintain skill。所以它是克制原则的**自动化延伸**，不是「为完整性而文档」的回潮。
 
-**怎么落到模板**：`SKILL.md` Phase 2.6 检测 git / claude CLI 后生成映射表 + 安装 hook（`templates/source-of-truth-map.tmpl` + `templates/anti-drift-hook.sh.tmpl`；默认 `.git/hooks/pre-push`，多人用 `core.hooksPath .githooks`）；无 git / 无 claude 则降级，防漂移落回 `maintain-claude-docs` 的手动 reconcile。生成的 maintain skill 含「与防漂移 hook 的分工」节。
+**怎么落到模板**：`SKILL.md` Phase 2.6 检测 git / claude CLI 后生成映射表 + 安装 hook（`templates/source-of-truth-map.tmpl` + `templates/anti-drift-hook.sh.tmpl`；默认 `.git/hooks/pre-push`，多人用 `core.hooksPath .githooks`）；无 git / 无 claude 则降级，防漂移落回 `maintain-project-docs` 的手动 reconcile。生成的 maintain skill 含「与防漂移 hook 的分工」节。
 
 ---
 

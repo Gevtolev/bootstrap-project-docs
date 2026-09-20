@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0] - 2026-09-20
+
+### Changed
+
+- 主 Skill 从 `bootstrap-claude-docs` 改名为 `bootstrap-project-docs`，面向不同 AI coding agent。
+- 项目规则统一使用 `AGENTS.md` 作为唯一真相源，不再生成或镜像 `CLAUDE.md`。
+- 项目级维护 Skill 改名为 `maintain-project-docs`，默认生成到 `.agents/skills/`。
+- README 增加公共 Agent Skills、Codex、Claude Code 和其他 Agent 的 Git + symlink 安装方式。
+
+### Migration
+
+- 删除旧安装目录中的 `bootstrap-claude-docs`，改为安装 `skills/bootstrap-project-docs`。
+- 已有项目可把旧 `CLAUDE.md` 作为一次性迁移输入，确认内容进入 `AGENTS.md` 后不再保留双份规则文件。
+
 ## [0.4.0] - 2026-06-29
 
 ### Added

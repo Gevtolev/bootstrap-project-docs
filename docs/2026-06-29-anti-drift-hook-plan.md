@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 给 `bootstrap-claude-docs` 增加「生成项目级防漂移 hook + 真相源映射表」的能力，让每个新项目自带「提交时低档模型自动检测文档漂移 → 按需开 subagent 修复 → 留工作区等 review」的闭环。
+**Goal:** 给 `bootstrap-project-docs` 增加「生成项目级防漂移 hook + 真相源映射表」的能力，让每个新项目自带「提交时低档模型自动检测文档漂移 → 按需开 subagent 修复 → 留工作区等 review」的闭环。
 
-**Architecture:** 一个真相源映射表（人看 + 检测器规则，一份两用）喂给一个默认挂 pre-push 的两阶段 git hook（haiku 检测 / sonnet 修复）。bootstrap 新增 Phase 2.6 负责按项目生成这两样并处理降级。改动落到源仓库 `claude-md-guide` 后同步到全局副本。
+**Architecture:** 一个真相源映射表（人看 + 检测器规则，一份两用）喂给一个默认挂 pre-push 的两阶段 git hook（haiku 检测 / sonnet 修复）。bootstrap 新增 Phase 2.6 负责按项目生成这两样并处理降级。Git 仓库中的 Skill 目录是唯一发布源，各 Agent 安装入口使用软链接。
 
 **Tech Stack:** Markdown（skill 文档 / 模板）、Bash（hook 脚本 + 测试，stub `claude` 做逻辑单测）、`claude -p` headless CLI（端到端验收时真实调用，用 haiku 控成本）。
 
@@ -16,7 +16,7 @@
 
 - **默认不硬拦截**：hook 任何 LLM 分支结束都 `exit 0`，绝不阻断 push；仅 `critical` 项可选非零退出（默认关）。
 - **自动改 vs 只提醒**：README 索引 / ARCHITECTURE 描述段 / glossary 可 `auto` 改；`docs/decisions` ADR、PRD 一律 `notify`，不自动改。
-- **改两份 + 同步一致**：源 `claude-md-guide/skills/bootstrap-claude-docs/` 改完，同步到全局副本 `~/.claude/skills/bootstrap-claude-docs/`，`diff -rq` 必须零差异。
+- **单一发布源**：只修改 `claude-md-guide/skills/bootstrap-project-docs/`；各 Agent 的用户级安装目录软链接到该源目录，避免副本漂移。
 - **模型档位**：检测默认 `claude-haiku-4-5`，修复默认 `claude-sonnet-4-6`，均经环境变量可配；测试与端到端控成本时都用 haiku。
 - **降级**：无 `git` → 不装 hook；无 `claude` CLI / 离线 → hook 跳过 LLM 仅做静态检查；LLM 失败/超时 → 放行。
 - **语言**：文档与注释用中文，代码/命令/标识符用英文。
@@ -28,17 +28,17 @@
 工作目录均为源仓库根 `claude-md-guide/`。
 
 **新增：**
-- `skills/bootstrap-claude-docs/templates/source-of-truth-map.tmpl` — 真相源映射表模板（hook 的输入契约）
-- `skills/bootstrap-claude-docs/templates/anti-drift-hook.sh.tmpl` — 可执行 pre-push hook 脚本模板
-- `skills/bootstrap-claude-docs/references/anti-drift-hook.md` — hook 蓝图：两阶段 prompt、挂点选择、安装方式、降级
+- `skills/bootstrap-project-docs/templates/source-of-truth-map.tmpl` — 真相源映射表模板（hook 的输入契约）
+- `skills/bootstrap-project-docs/templates/anti-drift-hook.sh.tmpl` — 可执行 pre-push hook 脚本模板
+- `skills/bootstrap-project-docs/references/anti-drift-hook.md` — hook 蓝图：两阶段 prompt、挂点选择、安装方式、降级
 - `tests/anti-drift-hook.test.sh` — hook 逻辑测试（stub `claude`）
 
 **修改：**
-- `skills/bootstrap-claude-docs/SKILL.md` — 加 Phase 2.6 + Quick Reference / Common Mistakes 补行
-- `skills/bootstrap-claude-docs/references/design-philosophy.md` — 加第 7 条「防漂移闭环」
-- `skills/bootstrap-claude-docs/templates/maintain-claude-docs-SKILL.md.tmpl` — 加「hook 与 maintain 分工」节
-- `skills/bootstrap-claude-docs/templates/CLAUDE.md.tmpl` — 改动自查加一行指向映射表/hook
-- `skills/bootstrap-claude-docs/references/project-type-variants.md` — 各类型补一句聚焦提示
+- `skills/bootstrap-project-docs/SKILL.md` — 加 Phase 2.6 + Quick Reference / Common Mistakes 补行
+- `skills/bootstrap-project-docs/references/design-philosophy.md` — 加第 7 条「防漂移闭环」
+- `skills/bootstrap-project-docs/templates/maintain-project-docs-SKILL.md.tmpl` — 加「hook 与 maintain 分工」节
+- `skills/bootstrap-project-docs/templates/AGENTS.md.tmpl` — 改动自查加一行指向映射表/hook
+- `skills/bootstrap-project-docs/references/project-type-variants.md` — 各类型补一句聚焦提示
 - `README.md` — 「6 条」→「7 条」原则 + 产出结构图补 hook/映射表
 - `CHANGELOG.md` — 新增 `[0.4.0]` 条目
 
@@ -47,7 +47,7 @@
 ### Task 1: 真相源映射表模板
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/templates/source-of-truth-map.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/source-of-truth-map.tmpl`
 
 **Interfaces:**
 - Consumes: 无（最上游）。
@@ -55,7 +55,7 @@
 
 - [ ] **Step 1: 写模板文件**
 
-写入 `skills/bootstrap-claude-docs/templates/source-of-truth-map.tmpl`：
+写入 `skills/bootstrap-project-docs/templates/source-of-truth-map.tmpl`：
 
 ```markdown
 # 真相源映射表 — {{PROJECT_NAME}}
@@ -82,16 +82,16 @@
 
 Run:
 ```bash
-grep -q 'SOURCE_OF_TRUTH_ROWS' skills/bootstrap-claude-docs/templates/source-of-truth-map.tmpl && \
-grep -q '处置' skills/bootstrap-claude-docs/templates/source-of-truth-map.tmpl && \
-grep -q 'auto|notify\|auto`（\|notify`（' skills/bootstrap-claude-docs/templates/source-of-truth-map.tmpl && echo OK
+grep -q 'SOURCE_OF_TRUTH_ROWS' skills/bootstrap-project-docs/templates/source-of-truth-map.tmpl && \
+grep -q '处置' skills/bootstrap-project-docs/templates/source-of-truth-map.tmpl && \
+grep -q 'auto|notify\|auto`（\|notify`（' skills/bootstrap-project-docs/templates/source-of-truth-map.tmpl && echo OK
 ```
 Expected: 打印 `OK`（含占位符、列头、处置取值说明）。
 
 - [ ] **Step 3: 提交**
 
 ```bash
-git add skills/bootstrap-claude-docs/templates/source-of-truth-map.tmpl
+git add skills/bootstrap-project-docs/templates/source-of-truth-map.tmpl
 git commit -m "feat: add source-of-truth-map template for anti-drift"
 ```
 
@@ -100,7 +100,7 @@ git commit -m "feat: add source-of-truth-map template for anti-drift"
 ### Task 2: 防漂移 hook 脚本模板 + 逻辑测试
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/templates/anti-drift-hook.sh.tmpl`
+- Create: `skills/bootstrap-project-docs/templates/anti-drift-hook.sh.tmpl`
 - Test: `tests/anti-drift-hook.test.sh`
 
 **Interfaces:**
@@ -116,7 +116,7 @@ git commit -m "feat: add source-of-truth-map template for anti-drift"
 # 用 stub claude 验证 anti-drift hook 的逻辑分支，不调真实 LLM。
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-TMPL="$ROOT/skills/bootstrap-claude-docs/templates/anti-drift-hook.sh.tmpl"
+TMPL="$ROOT/skills/bootstrap-project-docs/templates/anti-drift-hook.sh.tmpl"
 fail=0
 check() { if eval "$2"; then echo "  ✓ $1"; else echo "  ✗ $1"; fail=1; fi; }
 
@@ -175,11 +175,11 @@ Expected: FAIL —— hook 模板还不存在，Case 1/2 的断言失败（`pre-
 
 - [ ] **Step 3: 写 hook 脚本模板**
 
-写入 `skills/bootstrap-claude-docs/templates/anti-drift-hook.sh.tmpl`：
+写入 `skills/bootstrap-project-docs/templates/anti-drift-hook.sh.tmpl`：
 
 ```bash
 #!/usr/bin/env bash
-# anti-drift pre-push hook — generated by bootstrap-claude-docs (Phase 2.6)
+# anti-drift pre-push hook — generated by bootstrap-project-docs (Phase 2.6)
 # 默认软提醒：任何分支都 exit 0，绝不阻断 push。
 set -uo pipefail
 
@@ -241,7 +241,7 @@ Expected: 三个 Case 全 `✓`，末行 `ALL PASS`。
 - [ ] **Step 5: 提交**
 
 ```bash
-git add skills/bootstrap-claude-docs/templates/anti-drift-hook.sh.tmpl tests/anti-drift-hook.test.sh
+git add skills/bootstrap-project-docs/templates/anti-drift-hook.sh.tmpl tests/anti-drift-hook.test.sh
 git commit -m "feat: add anti-drift pre-push hook template + logic tests"
 ```
 
@@ -250,7 +250,7 @@ git commit -m "feat: add anti-drift pre-push hook template + logic tests"
 ### Task 3: hook 蓝图 reference
 
 **Files:**
-- Create: `skills/bootstrap-claude-docs/references/anti-drift-hook.md`
+- Create: `skills/bootstrap-project-docs/references/anti-drift-hook.md`
 
 **Interfaces:**
 - Consumes: Task 1 映射表格式、Task 2 hook 脚本。
@@ -258,7 +258,7 @@ git commit -m "feat: add anti-drift pre-push hook template + logic tests"
 
 - [ ] **Step 1: 写 reference**
 
-写入 `skills/bootstrap-claude-docs/references/anti-drift-hook.md`，必须含这些小节（内容据 spec §4–6 展开）：
+写入 `skills/bootstrap-project-docs/references/anti-drift-hook.md`，必须含这些小节（内容据 spec §4–6 展开）：
 
 1. `## 这是什么` — 两阶段闭环一段话 + 与 maintain skill 的分工（hook=自动/提交时/机械漂移；maintain=按需/人主导/深度判断）。
 2. `## 映射表是规则源` — 指向 `source-of-truth-map.tmpl`，说明「一份两用」。
@@ -272,7 +272,7 @@ git commit -m "feat: add anti-drift pre-push hook template + logic tests"
 
 Run:
 ```bash
-f=skills/bootstrap-claude-docs/references/anti-drift-hook.md
+f=skills/bootstrap-project-docs/references/anti-drift-hook.md
 for s in 这是什么 映射表是规则源 两阶段 prompt 挂点选择 安装方式 降级矩阵 模型与成本; do
   grep -q "$s" "$f" || { echo "缺小节: $s"; exit 1; }; done; echo OK
 ```
@@ -281,7 +281,7 @@ Expected: `OK`。
 - [ ] **Step 3: 提交**
 
 ```bash
-git add skills/bootstrap-claude-docs/references/anti-drift-hook.md
+git add skills/bootstrap-project-docs/references/anti-drift-hook.md
 git commit -m "docs: add anti-drift-hook reference (blueprint, install, degrade)"
 ```
 
@@ -290,7 +290,7 @@ git commit -m "docs: add anti-drift-hook reference (blueprint, install, degrade)
 ### Task 4: SKILL.md 加 Phase 2.6
 
 **Files:**
-- Modify: `skills/bootstrap-claude-docs/SKILL.md`
+- Modify: `skills/bootstrap-project-docs/SKILL.md`
 
 **Interfaces:**
 - Consumes: Task 1/2/3 的文件名（`source-of-truth-map.tmpl`、`anti-drift-hook.sh.tmpl`、`references/anti-drift-hook.md`）。
@@ -320,7 +320,7 @@ git commit -m "docs: add anti-drift-hook reference (blueprint, install, degrade)
 
 Run:
 ```bash
-f=skills/bootstrap-claude-docs/SKILL.md
+f=skills/bootstrap-project-docs/SKILL.md
 grep -q 'Phase 2.6' "$f" && grep -q 'source-of-truth-map' "$f" && \
 grep -q 'anti-drift-hook' "$f" && echo OK
 ```
@@ -329,7 +329,7 @@ Expected: `OK`。
 - [ ] **Step 4: 提交**
 
 ```bash
-git add skills/bootstrap-claude-docs/SKILL.md
+git add skills/bootstrap-project-docs/SKILL.md
 git commit -m "feat: add Phase 2.6 (generate anti-drift hook) to bootstrap SKILL"
 ```
 
@@ -338,13 +338,13 @@ git commit -m "feat: add Phase 2.6 (generate anti-drift hook) to bootstrap SKILL
 ### Task 5: 设计哲学第 7 条 + maintain/CLAUDE 衔接
 
 **Files:**
-- Modify: `skills/bootstrap-claude-docs/references/design-philosophy.md`
-- Modify: `skills/bootstrap-claude-docs/templates/maintain-claude-docs-SKILL.md.tmpl`
-- Modify: `skills/bootstrap-claude-docs/templates/CLAUDE.md.tmpl`
+- Modify: `skills/bootstrap-project-docs/references/design-philosophy.md`
+- Modify: `skills/bootstrap-project-docs/templates/maintain-project-docs-SKILL.md.tmpl`
+- Modify: `skills/bootstrap-project-docs/templates/AGENTS.md.tmpl`
 
 **Interfaces:**
 - Consumes: Task 1–4 的概念与文件名。
-- Produces: 生成出来的项目里，maintain skill 与 CLAUDE.md 对 hook/映射表的引用。
+- Produces: 生成出来的项目里，maintain skill 与 AGENTS.md 对 hook/映射表的引用。
 
 - [ ] **Step 1: design-philosophy 加第 7 条**
 
@@ -352,9 +352,9 @@ git commit -m "feat: add Phase 2.6 (generate anti-drift hook) to bootstrap SKILL
 
 - [ ] **Step 2: maintain 模板加分工节**
 
-在 `maintain-claude-docs-SKILL.md.tmpl` 的 `## When to Use` 后加一节 `## 与防漂移 hook 的分工`：hook 兜底机械漂移（索引/描述段/字段一致），maintain 只管 hook 够不到的深度判断（ADR 该不该写、季度审计、结构重组）；checklist 第 4 项（索引）注明「由 hook 兜底」。
+在 `maintain-project-docs-SKILL.md.tmpl` 的 `## When to Use` 后加一节 `## 与防漂移 hook 的分工`：hook 兜底机械漂移（索引/描述段/字段一致），maintain 只管 hook 够不到的深度判断（ADR 该不该写、季度审计、结构重组）；checklist 第 4 项（索引）注明「由 hook 兜底」。
 
-- [ ] **Step 3: CLAUDE.md.tmpl 改动自查加一行**
+- [ ] **Step 3: AGENTS.md.tmpl 改动自查加一行**
 
 在 `{{CHANGE_REVIEW_CHECKLIST}}` 的 TODO 注释样例里加一行引导：
 ```
@@ -365,18 +365,18 @@ git commit -m "feat: add Phase 2.6 (generate anti-drift hook) to bootstrap SKILL
 
 Run:
 ```bash
-grep -q '## 7' skills/bootstrap-claude-docs/references/design-philosophy.md && \
-grep -q '防漂移 hook 的分工\|防漂移 hook' skills/bootstrap-claude-docs/templates/maintain-claude-docs-SKILL.md.tmpl && \
-grep -q 'source-of-truth-map' skills/bootstrap-claude-docs/templates/CLAUDE.md.tmpl && echo OK
+grep -q '## 7' skills/bootstrap-project-docs/references/design-philosophy.md && \
+grep -q '防漂移 hook 的分工\|防漂移 hook' skills/bootstrap-project-docs/templates/maintain-project-docs-SKILL.md.tmpl && \
+grep -q 'source-of-truth-map' skills/bootstrap-project-docs/templates/AGENTS.md.tmpl && echo OK
 ```
 Expected: `OK`。
 
 - [ ] **Step 5: 提交**
 
 ```bash
-git add skills/bootstrap-claude-docs/references/design-philosophy.md \
-        skills/bootstrap-claude-docs/templates/maintain-claude-docs-SKILL.md.tmpl \
-        skills/bootstrap-claude-docs/templates/CLAUDE.md.tmpl
+git add skills/bootstrap-project-docs/references/design-philosophy.md \
+        skills/bootstrap-project-docs/templates/maintain-project-docs-SKILL.md.tmpl \
+        skills/bootstrap-project-docs/templates/AGENTS.md.tmpl
 git commit -m "feat: add anti-drift design principle + maintain/CLAUDE wiring"
 ```
 
@@ -385,7 +385,7 @@ git commit -m "feat: add anti-drift design principle + maintain/CLAUDE wiring"
 ### Task 6: 周边同步（类型变体 + README + CHANGELOG）
 
 **Files:**
-- Modify: `skills/bootstrap-claude-docs/references/project-type-variants.md`
+- Modify: `skills/bootstrap-project-docs/references/project-type-variants.md`
 - Modify: `README.md`
 - Modify: `CHANGELOG.md`
 
@@ -429,7 +429,7 @@ Expected: `OK`。
 - [ ] **Step 5: 提交**
 
 ```bash
-git add skills/bootstrap-claude-docs/references/project-type-variants.md README.md CHANGELOG.md
+git add skills/bootstrap-project-docs/references/project-type-variants.md README.md CHANGELOG.md
 git commit -m "docs: wire anti-drift into type-variants, README, CHANGELOG (0.4.0)"
 ```
 
@@ -455,7 +455,7 @@ mkdir -p src docs
 printf '# README\n\n## API\n- GET /ping\n' > README.md
 printf 'export const api = ["/ping"];\n' > src/api.ts
 # 装映射表（渲染：把 ROWS 占位换成一条 auto 规则）
-SRC=~/projects/claude-md-guide/skills/bootstrap-claude-docs/templates
+SRC=~/projects/claude-md-guide/skills/bootstrap-project-docs/templates
 sed 's#{{PROJECT_NAME}}#mock#; s#{{SOURCE_OF_TRUTH_ROWS}}#| `src/api.ts` | README.md 的「API」节 | auto |#' \
   "$SRC/source-of-truth-map.tmpl" > docs/source-of-truth-map.md
 cp "$SRC/anti-drift-hook.sh.tmpl" .git/hooks/pre-push && chmod +x .git/hooks/pre-push
@@ -500,34 +500,34 @@ Expected: 退出码 0 + 打印「claude CLI 不在 PATH，跳过」。
 
 ---
 
-### Task 8: 同步全局副本 + 一致性收口
+### Task 8: 安装软链接 + 一致性收口
 
 **Files:**
-- Sync: `~/.claude/skills/bootstrap-claude-docs/` ← 源
+- Link: 当前 Agent 的用户级 Skill 目录 → Git 源
 - Modify: 无（仅同步与验证）
 
 **Interfaces:**
 - Consumes: Task 1–6 已提交的源改动。
-- Produces: 源与全局副本字节一致。
+- Produces: 安装入口解析到 Git 源目录。
 
-- [ ] **Step 1: 同步源到全局副本**
+- [ ] **Step 1: 创建安装软链接**
 
 ```bash
-rsync -a --delete ~/projects/claude-md-guide/skills/bootstrap-claude-docs/ \
-                  ~/.claude/skills/bootstrap-claude-docs/
+skill_source="$PWD/skills/bootstrap-project-docs"
+mkdir -p "$HOME/.claude/skills"
+ln -sfn "$skill_source" "$HOME/.claude/skills/bootstrap-project-docs"
 ```
-（无 rsync 则 `rm -rf` 目标后 `cp -r`。）
 
-- [ ] **Step 2: 验证零差异**
+- [ ] **Step 2: 验证链接目标**
 
 Run:
 ```bash
-diff -rq ~/projects/claude-md-guide/skills/bootstrap-claude-docs \
-         ~/.claude/skills/bootstrap-claude-docs && echo "IN SYNC"
+test "$(readlink -f "$HOME/.claude/skills/bootstrap-project-docs")" = \
+     "$(readlink -f "$PWD/skills/bootstrap-project-docs")" && echo "LINKED"
 ```
-Expected: 无输出 + `IN SYNC`。
+Expected: 输出 `LINKED`。
 
-- [ ] **Step 3: 跑一遍 hook 测试确认全局副本可用（可选）**
+- [ ] **Step 3: 跑一遍 hook 测试确认安装入口可用（可选）**
 
 Run: `bash ~/projects/claude-md-guide/tests/anti-drift-hook.test.sh`
 Expected: `ALL PASS`。

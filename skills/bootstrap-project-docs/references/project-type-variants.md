@@ -10,7 +10,7 @@
 | CLI 工具 | bin 入口 / cobra / click / commander | 命令树 / IO 协议 / 配置加载 | 主用 decisions + research + exec-plans（默认无 insights） |
 | 库 / SDK | 主导出 / 多版本支持 | 公共 API 表面 / 版本兼容矩阵 / 扩展点 | 主用 decisions + research + exec-plans |
 | 后端服务 | Dockerfile + 长进程 | 服务边界 / 队列 / 数据流 / SLO | 全 4 类 |
-| Monorepo | workspaces / lerna / nx / turborepo | 工作区图 / 包依赖图 / 发布流 | 顶层 + 每包轻量 CLAUDE.md |
+| Monorepo | workspaces / lerna / nx / turborepo | 工作区图 / 包依赖图 / 发布流 | 顶层 + 每包轻量 AGENTS.md |
 | 移动 App | iOS / Android / RN / Flutter | 平台分支 / 状态管理 / 原生桥 | decisions + insights + exec-plans |
 | 数据 / Notebook | .ipynb 多 / DAG 文件 | Pipeline DAG / 数据契约 / 实验记录 | research 比 insights 重要 |
 
@@ -31,7 +31,7 @@
 ### docs/ 调整
 保留全部 4 类（decisions / insights / research / exec-plans）。
 
-### maintain-claude-docs 审计聚焦（填入 description；按需触发，非每改动）
+### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a web app — focus the doc audit on route / API / page / DB-schema changes and the front/back boundary.`
 
 ### 防漂移映射表聚焦（填入 `docs/source-of-truth-map.md`）
@@ -54,7 +54,7 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 ### docs/ 调整
 默认不要 `insights/`（CLI 工具产品决策少；让用户自己开启）；其余保留 decisions / research / exec-plans。
 
-### maintain-claude-docs 审计聚焦（填入 description；按需触发，非每改动）
+### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a CLI tool — focus the doc audit on command / flag / config-option changes.`
 
 ### 防漂移映射表聚焦（填入 `docs/source-of-truth-map.md`）
@@ -77,7 +77,7 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 ### docs/ 调整
 默认 `decisions/` + `research/` + `exec-plans/`；`insights/` 可选。
 
-### maintain-claude-docs 审计聚焦（填入 description；按需触发，非每改动）
+### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a library/SDK — focus the doc audit on public API surface, exports, and extension points (note SemVer impact).`
 
 ### 防漂移映射表聚焦（填入 `docs/source-of-truth-map.md`）
@@ -102,7 +102,7 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 ### docs/ 调整
 保留全部 4 类。
 
-### maintain-claude-docs 审计聚焦（填入 description；按需触发，非每改动）
+### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a backend service — focus the doc audit on endpoints, queue contracts, and service boundaries.`
 
 ### 防漂移映射表聚焦（填入 `docs/source-of-truth-map.md`）
@@ -122,16 +122,15 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 3. 发布流（独立发布 vs 统一发布）
 
 ### docs/ 调整
-顶层全 4 类；每个 package 生成一份子包级 CLAUDE.md（模板：`templates/sub-package-CLAUDE.md.tmpl`），
-含该子包的职责、专属 dev 命令、本地约定、关键入口。Claude 进入子目录时自动加载——
-这是文章 "Scoping test and lint commands per subdirectory" 最佳实践的落地。
+顶层全 4 类；每个 package 生成一份子包级 AGENTS.md（模板：`templates/sub-package-AGENTS.md.tmpl`），
+含该子包的职责、专属 dev 命令、本地约定、关键入口。支持层级 `AGENTS.md` 的 Agent 进入子目录时按作用域加载。
 
 ### Phase 2 额外步骤（monorepo 专属）
 1. 识别所有 workspace packages（从 `workspaces` / `pnpm-workspace.yaml` 等读取）
-2. 每个 package 目录生成 `CLAUDE.md`（用 `sub-package-CLAUDE.md.tmpl`）
+2. 每个 package 目录生成 `AGENTS.md`（用 `sub-package-AGENTS.md.tmpl`）
 3. 根 ARCHITECTURE.md `## 目录结构` 里列出每个 package 一句话职责
 
-### maintain-claude-docs 审计聚焦（填入 description；按需触发，非每改动）
+### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a monorepo — focus the doc audit on new packages, workspace dependencies, and the release flow.`
 
 ---
@@ -150,7 +149,7 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 ### docs/ 调整
 保留 `decisions/` + `insights/` + `exec-plans/`；`research/` 视情况。
 
-### maintain-claude-docs 审计聚焦（填入 description；按需触发，非每改动）
+### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a mobile app — focus the doc audit on screens, native bridges, and state-management changes.`
 
 ---
@@ -169,5 +168,5 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 ### docs/ 调整
 `research/` 比 `insights/` 重要；建议把 `insights/` 与 `research/` 合并为单目录；`exec-plans/` 保留；`decisions/` 保留。
 
-### maintain-claude-docs 审计聚焦（填入 description；按需触发，非每改动）
+### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a data/notebook project — focus the doc audit on pipeline stages, data contracts, and experiment records.`
