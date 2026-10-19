@@ -34,7 +34,7 @@ acme-app — 一个虚构的 SaaS 看板工具（仅作 bootstrap-project-docs �
 2. 改动是否涉及 schema → 是否需要写 `migrations/` 下的新迁移
 3. 改动是否涉及 API 契约 → 是否需要同步 OpenAPI 定义
 4. 改动是否涉及国际化 → 是否需要同步 `src/i18n/{en,zh}.ts`
-5. 改动是否产生架构/产品决策 → 是否需要在 `docs/decisions/` 新增 ADR
+5. 改动是否产生架构/产品决策 → 是否需要在 `docs/adr/` 新增 ADR
 
 ## 工作流
 
@@ -45,7 +45,7 @@ acme-app — 一个虚构的 SaaS 看板工具（仅作 bootstrap-project-docs �
 ## 文档
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — 项目架构、目录结构、数据流
-- `docs/decisions/` — 架构决策记录（ADR：Context / Decision / Consequences）
+- `docs/adr/` — 架构决策记录（ADR：Context / Decision / Consequences）
 - `docs/insights/` — 产品思考文档（用户视角、商业理由、设计动机）
 - `docs/research/` — 调研文档（技术方案、可行性分析）
 - `docs/exec-plans/` — 执行计划（进度状态、决策日志、技术债务）

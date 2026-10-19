@@ -6,12 +6,12 @@
 
 | 类型 | 检测信号 | ARCHITECTURE 必填 | docs/ 调整 |
 |------|----------|-------------------|-----------|
-| Web 应用 | Next.js / Vite / Django / Rails | 路由 / 数据流 / DB schema / API / 前后端边界 | 全 4 类（decisions / insights / research / exec-plans） |
-| CLI 工具 | bin 入口 / cobra / click / commander | 命令树 / IO 协议 / 配置加载 | 主用 decisions + research + exec-plans（默认无 insights） |
-| 库 / SDK | 主导出 / 多版本支持 | 公共 API 表面 / 版本兼容矩阵 / 扩展点 | 主用 decisions + research + exec-plans |
+| Web 应用 | Next.js / Vite / Django / Rails | 路由 / 数据流 / DB schema / API / 前后端边界 | 全 4 类（adr / insights / research / exec-plans） |
+| CLI 工具 | bin 入口 / cobra / click / commander | 命令树 / IO 协议 / 配置加载 | 主用 adr + research + exec-plans（默认无 insights） |
+| 库 / SDK | 主导出 / 多版本支持 | 公共 API 表面 / 版本兼容矩阵 / 扩展点 | 主用 adr + research + exec-plans |
 | 后端服务 | Dockerfile + 长进程 | 服务边界 / 队列 / 数据流 / SLO | 全 4 类 |
 | Monorepo | workspaces / lerna / nx / turborepo | 工作区图 / 包依赖图 / 发布流 | 顶层 + 每包轻量 AGENTS.md |
-| 移动 App | iOS / Android / RN / Flutter | 平台分支 / 状态管理 / 原生桥 | decisions + insights + exec-plans |
+| 移动 App | iOS / Android / RN / Flutter | 平台分支 / 状态管理 / 原生桥 | adr + insights + exec-plans |
 | 数据 / Notebook | .ipynb 多 / DAG 文件 | Pipeline DAG / 数据契约 / 实验记录 | research 比 insights 重要 |
 
 ## 1. Web 应用
@@ -29,7 +29,7 @@
 5. 前后端边界（API 契约约定）
 
 ### docs/ 调整
-保留全部 4 类（decisions / insights / research / exec-plans）。
+保留全部 4 类（adr / insights / research / exec-plans）。
 
 ### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a web app — focus the doc audit on route / API / page / DB-schema changes and the front/back boundary.`
@@ -52,7 +52,7 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 4. 依赖的外部工具（如有 shell out）
 
 ### docs/ 调整
-默认不要 `insights/`（CLI 工具产品决策少；让用户自己开启）；其余保留 decisions / research / exec-plans。
+默认不要 `insights/`（CLI 工具产品决策少；让用户自己开启）；其余保留 adr / research / exec-plans。
 
 ### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a CLI tool — focus the doc audit on command / flag / config-option changes.`
@@ -75,7 +75,7 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 3. 扩展点（plugin / hook / middleware 设计）
 
 ### docs/ 调整
-默认 `decisions/` + `research/` + `exec-plans/`；`insights/` 可选。
+默认 `adr/` + `research/` + `exec-plans/`；`insights/` 可选。
 
 ### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a library/SDK — focus the doc audit on public API surface, exports, and extension points (note SemVer impact).`
@@ -147,7 +147,7 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 3. 原生桥（如有 native module / platform channel）
 
 ### docs/ 调整
-保留 `decisions/` + `insights/` + `exec-plans/`；`research/` 视情况。
+保留 `adr/` + `insights/` + `exec-plans/`；`research/` 视情况。
 
 ### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a mobile app — focus the doc audit on screens, native bridges, and state-management changes.`
@@ -166,7 +166,7 @@ API 路由、DB schema、前后端 API 契约——这三类变更最易在代�
 3. 实验记录约定
 
 ### docs/ 调整
-`research/` 比 `insights/` 重要；建议把 `insights/` 与 `research/` 合并为单目录；`exec-plans/` 保留；`decisions/` 保留。
+`research/` 比 `insights/` 重要；建议把 `insights/` 与 `research/` 合并为单目录；`exec-plans/` 保留；`adr/` 保留。
 
 ### maintain-project-docs 审计聚焦（填入 description；按需触发，非每改动）
 `This is a data/notebook project — focus the doc audit on pipeline stages, data contracts, and experiment records.`

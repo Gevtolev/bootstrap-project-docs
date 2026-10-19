@@ -12,11 +12,11 @@ bootstrap-project-docs 的可移植原则。每条都附「做什么 / 反例 / 
 
 **怎么落到模板**：`AGENTS.md.tmpl` 严禁出现"目录结构 / 数据库 schema / API 路由表"段落；这些段落只在 `ARCHITECTURE.md.tmpl`。
 
-**附 · 术语层**：项目的"领域语言"自成一层——`docs/glossary.md`（`glossary.tmpl`），用 `术语: 一句定义 + _Avoid_: 禁用同义词` 统一黑话，让命名一致、AI 导航更准。它是**术语表，仅此而已**（不写实现、不当 spec）。可选 + lazy：有领域术语才建。⚠️ 注意绑定**代码 / 决策**而非"从某次对话刮取"——后者会与代码漂移（这是同类做法常见的坑）。
+**附 · 术语层**：项目的"领域语言"自成一层——`GLOSSARY.md`（`glossary.tmpl`），用 `术语: 一句定义 + _Avoid_: 禁用同义词` 统一黑话，让命名一致、AI 导航更准。它是**术语表，仅此而已**（不写实现、不当 spec）。可选 + lazy：有领域术语才建。⚠️ 注意绑定**代码 / 决策**而非"从某次对话刮取"——后者会与代码漂移（这是同类做法常见的坑）。
 
 ## 2. 决策追溯独立（Independent Decision Trail）
 
-**做什么**：关键架构与产品决策用轻量 ADR（Architecture Decision Record）记录在 `docs/decisions/`，每份一个文件。**默认就是标题 + 1-3 句话**（背景 / 决定 / 为什么），价值在于记录"做了决定"和"为什么"，段落（状态 / 候选方案 / 影响）按需才加。新决策按时间追加，不修改旧 ADR；推翻时新增 `Superseded by D##`。判据：难逆转 + 没上下文会困惑 + 真有取舍，三者同时成立才记。**durability**：写理由 / 契约，不写文件路径 / 行号 / 代码（会过时）。
+**做什么**：关键架构与产品决策用轻量 ADR（Architecture Decision Record）记录在 `docs/adr/`，每份一个文件。**默认就是标题 + 1-3 句话**（背景 / 决定 / 为什么），价值在于记录"做了决定"和"为什么"，段落（状态 / 候选方案 / 影响）按需才加。新决策按时间追加，不修改旧 ADR；推翻时新增 `Superseded by D##`。判据：难逆转 + 没上下文会困惑 + 真有取舍，三者同时成立才记。**durability**：写理由 / 契约，不写文件路径 / 行号 / 代码（会过时）。
 
 **反例**：决策散落在 commit message / wiki / chat 记录 / handover 文档里 → 半年后没人能完整还原"为什么是这样而不是另一种"，提需求的人换了，决策被反复推翻。
 
@@ -26,7 +26,7 @@ bootstrap-project-docs 的可移植原则。每条都附「做什么 / 反例 / 
 - ADR 标准格式让新人能 5 分钟读完一份决策，比读完整 PRD 快得多
 - 监管合规场景（金融 / 医疗）要求决策可审计——独立目录 + 不可变历史 + 电子签名是标准做法
 
-**怎么落到模板**：`docs/decisions/` 是必选目录；模板含 `docs-decisions-README.tmpl`（决策矩阵索引 + 三段判据 + what-qualifies 分类 + durability 规则）+ `adr.tmpl`（极简单份 ADR，段落可选）。
+**怎么落到模板**：`docs/adr/` 是必选目录；模板含 `docs-adr-README.tmpl`（决策矩阵索引 + 三段判据 + what-qualifies 分类 + durability 规则）+ `adr.tmpl`（极简单份 ADR，段落可选）。
 
 ## 3. 索引（Index，按需维护）
 
@@ -91,6 +91,6 @@ bootstrap-project-docs 的可移植原则。每条都附「做什么 / 反例 / 
 - "成对维护"对小到中型项目过重，对大型项目又因为粒度问题不易实施
 
 现已废弃。改为：
-- **决策追溯**独立到 `docs/decisions/`（ADR 体系）
+- **决策追溯**独立到 `docs/adr/`（ADR 体系）
 - **产品视角**留在 `docs/insights/`（PRD / 用户问题 / 商业理由），不再要求与 handover 配对
 - **现状描述 / 模块级深入**由顶层 `ARCHITECTURE.md` + 代码 docstring 承担，不再设独立 `handover/` 目录

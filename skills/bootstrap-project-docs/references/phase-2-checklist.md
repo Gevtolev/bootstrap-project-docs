@@ -6,8 +6,8 @@
 
 - [ ] `AGENTS.md`
 - [ ] `ARCHITECTURE.md`
-- [ ] `docs/decisions/README.md`
-- [ ] `docs/decisions/adr-template.md`
+- [ ] `docs/adr/README.md`
+- [ ] `docs/adr/adr-template.md`
 - [ ] `docs/exec-plans/README.md`
 - [ ] `docs/exec-plans/tech-debt-tracker.md`
 - [ ] `docs/exec-plans/exec-plan-template.md`
@@ -16,7 +16,7 @@
 
 ## 不应预建（lazy，首次有内容才创建）
 
-- [ ] **未**创建 `docs/glossary.md`（除非已识别出值得统一的领域术语）
+- [ ] **未**创建 `GLOSSARY.md`（除非已识别出值得统一的领域术语）
 - [ ] **未**创建 `docs/insights/`（除非已有要写的产品思考）
 - [ ] **未**创建 `docs/research/`（除非已有要落的调研）
 - [ ] 空目录 = 净亏损：不为"目录完整"预建任何空目录
@@ -24,7 +24,7 @@
 ## AGENTS.md 必含段落（项目规则唯一真相源）
 
 - [ ] `## 改动自查` 或同义节（≤4 核心项 + 一行软提示，不列长清单）
-- [ ] `## 文档` 索引节（列出 decisions / exec-plans，及 glossary / insights / research 并标「可选」）
+- [ ] `## 文档` 索引节（列出 adr / exec-plans，及 glossary / insights / research 并标「可选」）
 - [ ] `## 工作流` 或 `## 开发规则` 节
 - [ ] `## 任务追踪` 节：一行写明拆票 Skill 与检查点 1 选定的追踪位置
 
@@ -47,6 +47,6 @@
 
 ## 索引先验
 
-- [ ] decisions/README.md 含决策矩阵（即便目前为空，也要有表头）
+- [ ] adr/README.md 含决策矩阵（即便目前为空，也要有表头）
 - [ ] exec-plans/README.md 区分 active / completed
 - [ ]（仅当 lazy 目录已因有内容而创建时）其 README 索引格式齐全

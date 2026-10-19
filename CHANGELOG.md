@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0] - 2026-10-19
+
+### Changed
+
+- **ADR 目录与命名**：`docs/decisions/` 改为 `docs/adr/`，文件命名从 `YYYY-MM-DD-<topic>.md` 改为 4 位顺序编号 `NNNN-<topic>.md`（新编号 = 现有最大编号 + 1，不复用），引用写 `ADR-NNNN`，决策日期只记在矩阵里。索引模板改名为 `docs-adr-README.tmpl`。
+- **术语表位置**：`docs/glossary.md` 移到根目录 `GLOSSARY.md`，仍按需创建；条目格式不变（术语 + 一句定义 + `_Avoid_`）。
+
 ## [0.6.0] - 2026-10-19
 
 ### Added

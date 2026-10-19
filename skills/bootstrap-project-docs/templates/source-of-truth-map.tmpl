@@ -14,5 +14,5 @@
 -->
 
 ## 红线
-- `docs/decisions/`（ADR）、PRD/规格 → 永远 `notify`，hook 不自动改（避免 LLM 改错决策语义）。
+- `docs/adr/`（ADR）、PRD/规格 → 永远 `notify`，hook 不自动改（避免 LLM 改错决策语义）。
 - 运行时必须各写一份、消不掉的重复（如 schema↔types↔state）→ 列为 `notify`，并用**测试**锁一致，而非靠 hook。

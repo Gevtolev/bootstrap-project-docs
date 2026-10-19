@@ -3,7 +3,7 @@ name: bootstrap-project-docs
 description: |
   Use when initializing, creating, restructuring, or scaffolding a project's documentation
   system for AI coding agents — covering AGENTS.md, ARCHITECTURE.md, and docs/
-  subdirectories with decisions/insights/research/exec-plans. Use when user says: 初始化文档体系,
+  subdirectories with adr/insights/research/exec-plans. Use when user says: 初始化文档体系,
   搭建 AGENTS.md 体系, 建立项目文档框架, bootstrap project docs, scaffold AGENTS.md system.
   Use also when an agent's init output feels too thin, when an existing AGENTS.md needs
   restructuring, or when legacy CLAUDE.md guidance must be migrated into AGENTS.md.
@@ -43,8 +43,8 @@ description: |
 
 **Phase 2 — 骨架生成**（写到 `.project-docs-staging/`）
 按项目类型选模板（见 `references/project-type-variants.md`），只建**核心集**：
-`AGENTS.md`/`ARCHITECTURE.md`、`docs/decisions/`（README + ADR 模板）、`docs/exec-plans/`（README + plan 模板 + tech-debt）。
-**lazy**：`docs/glossary.md` / `insights/` / `research/` 不预建，首次有内容才创建（空目录是净亏损）。
+`AGENTS.md`/`ARCHITECTURE.md`、`docs/adr/`（README + ADR 模板）、`docs/exec-plans/`（README + plan 模板 + tech-debt）。
+**lazy**：`GLOSSARY.md` / `insights/` / `research/` 不预建，首次有内容才创建（空目录是净亏损）。
 可选：`.ignore`（ripgrep 格式）。Monorepo 另为每个子包生成 `AGENTS.md`。
 ✋ 检查点 2：用户审阅 staging → 确认后原子 mv 到正式位置。完整自检见 `references/phase-2-checklist.md`。
 
@@ -60,7 +60,7 @@ description: |
 完整蓝图（两阶段 prompt / 挂点 / 安装 / 降级）见 `references/anti-drift-hook.md`。✋ 检查点 2.6：把生成的映射表规则给用户确认（哪些 `auto` 哪些 `notify`）。
 
 **Phase 3 — 深度填充与验证**
-对用户标注的章节读源码深推；ARCHITECTURE 真实化；索引与 decisions 矩阵校验。
+对用户标注的章节读源码深推；ARCHITECTURE 真实化；索引与 ADR 矩阵校验。
 输出「日常如何维护这套体系」卡片。
 完整自检见 `references/phase-3-checklist.md`。
 
@@ -70,9 +70,9 @@ docs 子目录，目的互斥不重叠（★=核心集，其余 lazy 按需建�
 
 | 目录 | 回答的问题 |
 |------|-----------|
-| ★ `decisions/` | **为什么是这样而不是另一种**（ADR 决策追溯） |
+| ★ `adr/` | **为什么是这样而不是另一种**（ADR 决策追溯） |
 | ★ `exec-plans/` | **现在在做什么 / 进度**（active / completed） |
-| `glossary.md` | **这个词指什么**（统一项目黑话；术语表，仅此而已） |
+| `GLOSSARY.md`（根目录） | **这个词指什么**（统一项目黑话；术语表，仅此而已） |
 | `insights/` | **为什么做这个产品**（用户视角 / 商业理由 / 设计动机） |
 | `research/` | **有什么备选 / 可行性如何**（调研，可能不落地） |
 | `source-of-truth-map.md` | **哪些文件是真相源、如何同步**（防漂移映射表，Phase 2.6 生成） |
@@ -83,10 +83,10 @@ docs 子目录，目的互斥不重叠（★=核心集，其余 lazy 按需建�
 |---------|-----------|
 | Web | 全 4 类 |
 | CLI | 默认无 insights |
-| Library | decisions + research |
+| Library | adr + research |
 | Service | 全 4 类 |
 | Monorepo | 顶层 + 每包轻量 |
-| Mobile | decisions + insights |
+| Mobile | adr + insights |
 | Data | research 重于 insights |
 
 类型 → 模板映射的详细规则见 `references/project-type-variants.md`。

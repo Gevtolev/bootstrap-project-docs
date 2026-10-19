@@ -19,14 +19,14 @@
 项目根/
 ├── AGENTS.md                                   # 规则、流程、改动自查（≤4 核心项）
 ├── ARCHITECTURE.md                             # 结构、数据流、技术栈
+├── GLOSSARY.md              （lazy）           # 项目术语表（统一黑话）
 ├── docs/
-│   ├── decisions/README.md                     # 架构决策记录索引（ADR）
-│   ├── decisions/adr-template.md               # 极简 ADR 模板（标题 + 1-3 句）
+│   ├── adr/README.md                           # 架构决策记录索引（ADR，0001- 顺序编号）
+│   ├── adr/adr-template.md                     # 极简 ADR 模板（标题 + 1-3 句）
 │   ├── exec-plans/
 │   │   ├── README.md                           # 执行计划索引
 │   │   ├── tech-debt-tracker.md                # 技术债务追踪
 │   │   └── exec-plan-template.md               # 执行计划模板（含 Blocked by 依赖）
-│   ├── glossary.md          （lazy）           # 项目术语表（统一黑话）
 │   ├── insights/            （lazy）           # 产品思考
 │   ├── research/            （lazy）           # 调研
 │   └── source-of-truth-map.md                 # 真相源映射表（防漂移用）

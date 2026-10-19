@@ -33,7 +33,7 @@
 - `auto`：hook 可自动修复（机械、低风险文档，如 README 索引、ARCHITECTURE 描述段）。
 - `notify`：只提醒，不改文件（决策 / 规格类，如 ADR、PRD；LLM 易改错语义）。
 
-**红线**（来自映射表模板）：`docs/decisions/` ADR 和 PRD 永远 `notify`；运行时必须各写一份的重复（如 schema↔types↔state）列 `notify` 并用测试锁一致。
+**红线**（来自映射表模板）：`docs/adr/` ADR 和 PRD 永远 `notify`；运行时必须各写一份的重复（如 schema↔types↔state）列 `notify` 并用测试锁一致。
 
 ---
 

@@ -11,8 +11,8 @@
 ## 索引与校验
 
 - [ ] 每个**已创建**的 `docs/<dir>/README.md` 索引表与该目录实际文件对齐（无遗漏、无幻觉）
-- [ ] decisions/README.md 的决策矩阵与 `docs/decisions/` 中实际 ADR 文件对齐
-- [ ] AGENTS.md 文档索引节：核心集（decisions / exec-plans）链接存在且可点击；lazy 项（glossary / insights / research）已标「可选」，**不要求文件已存在**
+- [ ] adr/README.md 的决策矩阵与 `docs/adr/` 中实际 ADR 文件对齐
+- [ ] AGENTS.md 文档索引节：核心集（adr / exec-plans）链接存在且可点击；lazy 项（glossary / insights / research）已标「可选」，**不要求文件已存在**
 - [ ] 未预建任何空的 lazy 目录（glossary / insights / research 无内容则不应存在）
 
 ## 维护 skill 健全

@@ -6,7 +6,7 @@ description: |
   up, before a release) — NOT after every change. Use also when the user asks to record a
   decision or a term ("记个 ADR", "把这个决定记到文档里", "统一一下这个词"), or when a term or
   decision settles during a design discussion. {{TYPE_SPECIFIC_TRIGGER_SENTENCE}}
-  Keeps decisions/ADRs and README indexes honest without over-documenting; only record
+  Keeps ADRs and README indexes honest without over-documenting; only record
   reversal-resistant, non-obvious decisions.
 ---
 
@@ -29,7 +29,7 @@ description: |
 
 ## 访谈式记录
 
-记录决定或术语前，先自己读 `docs/glossary.md`、相关 ADR 和相关代码；能查到的事实不问用户。
+记录决定或术语前，先自己读 `GLOSSARY.md`、相关 ADR 和相关代码；能查到的事实不问用户。
 
 **用户说法与已有记录一致** → 直接写。
 
@@ -49,7 +49,7 @@ description: |
 每个问题附推荐答案，措辞让用户回「是」就等于接受推荐。只问当下能回答的问题，依赖其他未决问题的留到下一轮。
 
 用户回答后：
-1. 每个定型的术语**当场**写进 `docs/glossary.md`（无则首次创建）：一句话定义它是什么，被否决的说法列入 `_Avoid_`。
+1. 每个定型的术语**当场**写进 `GLOSSARY.md`（无则首次创建）：一句话定义它是什么，被否决的说法列入 `_Avoid_`。
 2. 按清单第 1 项的三段判据判断是否写 ADR；三者同时成立才写，写成标题 + 1-3 句。
 3. 代码与新决定不一致的地方，告诉用户并记入技术债务或执行计划，不顺手改代码。
 
@@ -63,10 +63,10 @@ description: |
 
 触发文档体检时，逐项检查：
 
-1. **是否产生「难逆转 + 没上下文会困惑 + 真有取舍」的关键决策？**（三者同时成立才记）→ 在 `docs/decisions/` 新增 ADR。**极简优先**：默认标题 + 1-3 句话，段落按需；命名 `YYYY-MM-DD-<topic>.md`，矩阵补 1 行。**durability**：写理由/契约，不写文件路径/行号/代码。日常可逆改动不写。
+1. **是否产生「难逆转 + 没上下文会困惑 + 真有取舍」的关键决策？**（三者同时成立才记）→ 在 `docs/adr/` 新增 ADR。**极简优先**：默认标题 + 1-3 句话，段落按需；命名 `NNNN-<topic>.md`（现有最大编号 + 1），矩阵补 1 行。**durability**：写理由/契约，不写文件路径/行号/代码。日常可逆改动不写。
 2. **是否构成新功能或新模块？** → 顶层 `ARCHITECTURE.md` 对应章节是否需要更新？模块级深入是否在代码 docstring 写清？
 3. **（可选）有 ADR 的 Context 段装不下的产品级"为什么"？** → 才考虑在 `docs/insights/` 写一份；不强制。
-   **（可选）出现了固定下来的领域术语/项目黑话？** → 在 `docs/glossary.md` 记一条（无则首次创建）；定义"是什么"、一句话、列 `_Avoid_` 同义词。
+   **（可选）出现了固定下来的领域术语/项目黑话？** → 在 `GLOSSARY.md` 记一条（无则首次创建）；定义"是什么"、一句话、列 `_Avoid_` 同义词。
 4. **是否增删了文档文件？** → 对应 `docs/<dir>/README.md` 索引同步了吗？（日常索引漂移由防漂移 hook 兜底；体检时复查 hook 够不到的：新目录、跨目录重组。）
 5. **是否发现了技术债务？** → 已添加到 `docs/exec-plans/tech-debt-tracker.md` 了吗？
 6. **是否在做中大型功能？** → 已起 `docs/exec-plans/active/<topic>.md`，并用 `split-into-tickets` 拆成纵切票了吗？
@@ -87,5 +87,5 @@ description: |
 - Monorepo：新增子包后是否同步了子包 AGENTS.md？
 - 所有类型：.ignore 是否需要更新（新增了生成文件/大型资产）？
 - 所有类型：只记「难逆转 + 没上下文会困惑 + 真有取舍」的决策；ADR 默认 1-3 句，不写文件路径/行号/代码（会过时）
-- 所有类型：新术语/黑话定型后，在 `docs/glossary.md` 记一条（无则首次创建）；定义"是什么"不是"做什么"
+- 所有类型：新术语/黑话定型后，在 `GLOSSARY.md` 记一条（无则首次创建）；定义"是什么"不是"做什么"
 -->
