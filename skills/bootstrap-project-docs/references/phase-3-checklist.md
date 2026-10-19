@@ -19,6 +19,7 @@
 
 - [ ] 项目级 maintain-project-docs/SKILL.md 已落到 `.agents/skills/` 或用户确认的当前 Agent 项目级 Skill 目录
 - [ ] 该 skill 的 description 适配本项目类型（不是通用模板）
+- [ ] 项目级 split-into-tickets/SKILL.md 与 maintain-project-docs 放在同一 Skill 目录，追踪方式与 AGENTS.md `## 任务追踪` 一致
 
 ## 收尾产物
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.0] - 2026-10-19
+
+### Added
+
+- **项目级拆票 Skill**：新增 `templates/split-into-tickets-SKILL.md.tmpl`，Phase 2.5 生成到 `.agents/skills/split-into-tickets/`。把计划拆成纵切票（每票打通端到端路径、自带测试与文档）、标注真实阻塞边、宽重构走 expand–contract；先请用户确认粒度与阻塞边，再按依赖顺序发布，不修改父项，按前沿推进。
+- **任务追踪方式**：新增 `references/ticket-trackers.md`。Phase 1 推荐、检查点 1 确认，三选一：本地文件（默认，`docs/exec-plans/active/<topic>/` 每票一个文件）、GitLab issues（glab；Premium 用原生阻塞链接，否则 `Blocked by` 行）、GitHub issues（gh；有 issue dependencies 用原生关系）。AGENTS.md 新增 `## 任务追踪` 节。
+- **访谈式记录**：maintain skill 新增同名一节。记录决定或术语前先读术语表、ADR 和代码；用词冲突、一词多义、与代码不一致或边界不清时，先问一轮（每问附推荐答案、边界给具体场景），术语定型当场写入 glossary。description 增加「记 ADR / 统一术语」触发词。
+
+### Changed
+
+- maintain checklist 第 6 项改为「起执行计划并用 split-into-tickets 拆票」；exec-plan 模板「拆分步骤」只列票编号 / 链接。
+
+### Credits
+
+- 访谈轮次（grilling）、领域建模追问（domain-modeling）与纵切拆票（to-tickets）的思路参考 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT，Copyright (c) 2026 Matt Pocock），按本体系用中文重写，生成的 Skill 不依赖任何第三方 Skill。
+
 ## [0.5.0] - 2026-09-20
 
 ### Changed

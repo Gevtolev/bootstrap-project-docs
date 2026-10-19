@@ -1,6 +1,6 @@
 # 空目录跑 /bootstrap-project-docs（greenfield 路径）的期望产出
 
-## 期望创建的文件（核心集：7 个文档文件 + 1 个项目级 Skill = 8）
+## 期望创建的文件（核心集：7 个文档文件 + 2 个项目级 Skill = 9）
 
 AGENTS.md
 ARCHITECTURE.md
@@ -10,6 +10,7 @@ docs/exec-plans/README.md
 docs/exec-plans/tech-debt-tracker.md
 docs/exec-plans/exec-plan-template.md
 .agents/skills/maintain-project-docs/SKILL.md
+.agents/skills/split-into-tickets/SKILL.md
 
 ## 不应被预建（lazy，首次有内容才创建）
 
@@ -21,7 +22,7 @@ docs/research/            ← 有调研才建
 
 ## 每个文件必含的关键标记
 
-- AGENTS.md：包含 `## 改动自查` 和 `## 文档` 两节；改动自查 ≤4 核心项 + 一行软提示
+- AGENTS.md：包含 `## 改动自查`、`## 任务追踪` 和 `## 文档` 三节；改动自查 ≤4 核心项 + 一行软提示
 - ARCHITECTURE.md：包含 `## 目录结构` 和 `## 技术栈` 两节
 - docs/decisions/README.md：标题含 "Decisions" 或 "决策"；含决策矩阵表头；含三段判据（难逆转 / 没上下文会困惑 / 真有取舍）+ durability 规则（不写文件路径/行号/代码）
 - docs/decisions/adr-template.md：极简——标题 + 1-3 句，段落（状态/候选/影响）为可选
@@ -29,7 +30,10 @@ docs/research/            ← 有调研才建
 - .agents/skills/maintain-project-docs/SKILL.md：
   - frontmatter 含 `name: maintain-project-docs`
   - description 含按需 / 阶段性触发（明示「非每改动」）
-  - body 含文档体检清单（含 ADR / glossary 项）
+  - body 含文档体检清单（含 ADR / glossary 项）和「访谈式记录」节
+- .agents/skills/split-into-tickets/SKILL.md：
+  - frontmatter 含 `name: split-into-tickets`
+  - 追踪方式小节为空目录默认的「本地文件」，不残留 `{{TICKET_TRACKER_SECTION}}`
 
 ## 手动验证流程
 

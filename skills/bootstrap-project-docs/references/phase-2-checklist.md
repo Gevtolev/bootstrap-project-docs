@@ -12,6 +12,7 @@
 - [ ] `docs/exec-plans/tech-debt-tracker.md`
 - [ ] `docs/exec-plans/exec-plan-template.md`
 - [ ] `.agents/skills/maintain-project-docs/SKILL.md`
+- [ ] `.agents/skills/split-into-tickets/SKILL.md`
 
 ## 不应预建（lazy，首次有内容才创建）
 
@@ -25,12 +26,19 @@
 - [ ] `## 改动自查` 或同义节（≤4 核心项 + 一行软提示，不列长清单）
 - [ ] `## 文档` 索引节（列出 decisions / exec-plans，及 glossary / insights / research 并标「可选」）
 - [ ] `## 工作流` 或 `## 开发规则` 节
+- [ ] `## 任务追踪` 节：一行写明拆票 Skill 与检查点 1 选定的追踪位置
 
 ## 维护 skill 必含字段
 
 - [ ] frontmatter 有 `name: maintain-project-docs`
 - [ ] description 含按需 / 阶段性触发条件 + 项目类型相关触发词（明示「非每改动」）
 - [ ] 正文包含文档体检清单（含"难逆转+没上下文会困惑+真有取舍 → 新增极简 ADR"项）
+- [ ] 正文包含「访谈式记录」节（冲突时先问一轮、每问附推荐答案、术语当场入表）
+
+## 拆票 skill 必含字段
+
+- [ ] frontmatter 有 `name: split-into-tickets`
+- [ ] `{{TICKET_TRACKER_SECTION}}` 已替换为选定的一种追踪方式，其余两种未残留
 
 ## 内容真实性
 

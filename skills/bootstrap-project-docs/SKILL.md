@@ -7,6 +7,8 @@ description: |
   搭建 AGENTS.md 体系, 建立项目文档框架, bootstrap project docs, scaffold AGENTS.md system.
   Use also when an agent's init output feels too thin, when an existing AGENTS.md needs
   restructuring, or when legacy CLAUDE.md guidance must be migrated into AGENTS.md.
+  Use also when a project needs a ticket-splitting and task-tracking convention for agents
+  (拆票规范, 任务追踪, 本地任务文件 / GitLab / GitHub issues).
 ---
 
 # Bootstrap Project Docs
@@ -35,7 +37,8 @@ description: |
 
 **Phase 1 — 扫描与推断**（不动文件）
 读 manifest（package.json/pyproject.toml/Cargo.toml/...）→ 识别类型；列模块；清点现有文档。
-输出"假设清单"。✋ 检查点 1：用户确认假设。
+判断任务追踪方式（本地文件默认；GitLab / GitHub 按 `git remote -v` 与 CLI 可用性推荐，规则见 `references/ticket-trackers.md`），写进假设清单。
+输出"假设清单"。✋ 检查点 1：用户确认假设（含追踪方式）。
 完整自检见 `references/phase-1-checklist.md`。
 
 **Phase 2 — 骨架生成**（写到 `.project-docs-staging/`）
@@ -45,10 +48,10 @@ description: |
 可选：`.ignore`（ripgrep 格式）。Monorepo 另为每个子包生成 `AGENTS.md`。
 ✋ 检查点 2：用户审阅 staging → 确认后原子 mv 到正式位置。完整自检见 `references/phase-2-checklist.md`。
 
-**Phase 2.5 — 生成项目级维护 skill**（核心创新）
-实例化 `templates/maintain-project-docs-SKILL.md.tmpl` → 默认写入 `.agents/skills/maintain-project-docs/SKILL.md`；若当前 Agent 明确要求其他项目级 Skill 目录，先向用户说明再使用其官方目录。
-description 按类型定制（见 `references/project-type-variants.md`），body 含按需文档体检清单，
-让阶段性 / 显式触发时维护文档（非每改动自动跑）。
+**Phase 2.5 — 生成项目级 skill**（核心创新）
+默认写入 `.agents/skills/<name>/SKILL.md`；若当前 Agent 明确要求其他项目级 Skill 目录，先向用户说明再使用其官方目录。
+- `maintain-project-docs`：实例化 `templates/maintain-project-docs-SKILL.md.tmpl`；description 按类型定制（见 `references/project-type-variants.md`），body 含按需文档体检清单和访谈式记录（记决定 / 术语前先对照术语表与代码追问），非每改动自动跑。
+- `split-into-tickets`：实例化 `templates/split-into-tickets-SKILL.md.tmpl`；把检查点 1 选定的追踪方式小节从 `references/ticket-trackers.md` 原样填入 `{{TICKET_TRACKER_SECTION}}`，并填 AGENTS.md 的 `## 任务追踪`。
 
 **Phase 2.6 — 生成项目级防漂移 hook（防漂移闭环）**
 检测 `git` 与 `claude` CLI：
@@ -96,6 +99,7 @@ docs 子目录，目的互斥不重叠（★=核心集，其余 lazy 按需建�
 | 跳过检查点 | 三个检查点必须停下问用户 |
 | 把架构写进 AGENTS.md | 关注点分离——架构进 ARCHITECTURE.md |
 | 忘了项目级维护 skill | Phase 2.5 必做；维护体系长期靠它 |
+| 拆票 skill 留着三种追踪方式 | 只填检查点 1 选定的一种，AGENTS.md `## 任务追踪` 与之一致 |
 | 忘了生成防漂移 hook/映射表 | Phase 2.6：有 git 就装 pre-push hook + 映射表，无 git 落回 maintain |
 | 直接写到 cwd | 必须先 staging，用户确认后 mv |
 

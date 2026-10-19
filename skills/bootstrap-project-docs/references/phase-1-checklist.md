@@ -9,6 +9,7 @@
 - [ ] **关键模块已列出**：识别 `src/` `lib/` `app/` `cmd/` `internal/` `pkg/` 等入口结构；对每个一级子目录给出"看起来是做什么的"猜测
 - [ ] **现有文档已清点**：搜索 `**/AGENTS.md`、`**/ARCHITECTURE.md`、`docs/**`、`README*`；若存在旧 `CLAUDE.md`，只把它视为一次性迁移输入
 - [ ] **入口路径已分流**：greenfield / complete / restructure 三选一已确定
+- [ ] **任务追踪方式已推荐**：本地文件（默认）/ GitLab / GitHub 三选一，依据见 `references/ticket-trackers.md`
 - [ ] **假设清单已生成**：每条推断都带"假设"标签，且呈交给用户审阅
 - [ ] **用户已对假设清单做出回应**：确认 / 修正 / 追加
 
