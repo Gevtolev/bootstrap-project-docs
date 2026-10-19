@@ -9,10 +9,16 @@
      唯一例外：编码"决策本身"的 schema / 状态机 / 类型片段，截到决策相关的最小部分。
 -->
 
+<!-- 本 ADR 推翻旧决策时，在上面正文写：Supersedes [ADR-MMMM](./MMMM-other-topic.md)（只推翻一条时写明哪条），
+     并到旧 ADR 标题下第一行加状态行：
+     > **状态**：Superseded by [ADR-NNNN](./NNNN-this-topic.md)
+     > **状态**：部分被 [ADR-NNNN](./NNNN-this-topic.md) 推翻——<被推翻的那条>不再生效，其余仍有效
+     旧 ADR 正文不改；矩阵里旧 ADR 的状态同步改。规则见 README.md。
+-->
+
 <!-- ↓↓↓ 以下全部可选，仅当确有价值才加；不要为凑格式而填 ↓↓↓
 
-- **状态**：Proposed / Accepted / Deprecated / Superseded by [ADR-NNNN](./NNNN-other-topic.md)
-  （决策被推翻时：新增一份 ADR 标记原 ADR 为 Superseded，不改原文）
+- **状态**：Proposed / Accepted / Deprecated
 
 ## 候选方案
 仅当被否决的备选将来还会有人重新提起、值得留个"为什么没选它"时才写。

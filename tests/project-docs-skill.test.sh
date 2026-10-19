@@ -49,6 +49,11 @@ check "fixture 生成 docs/adr/README.md" grep -q '^docs/adr/README\.md$' "$root
 check "Skill 内不再引用 docs/glossary.md" bash -c "! grep -rq 'glossary\.md' '$skill_dir'"
 check "AGENTS.md 模板指向根目录 GLOSSARY.md" grep -q 'GLOSSARY\.md' "$skill_dir/templates/AGENTS.md.tmpl"
 check "fixture 不预建 GLOSSARY.md" grep -q '^GLOSSARY\.md ' "$root_dir/tests/fixtures/empty/expected-structure.txt"
+check "推翻规则要求在旧 ADR 加状态行" grep -q '旧 ADR 标题下' "$skill_dir/templates/docs-adr-README.tmpl"
+check "推翻规则覆盖部分推翻" grep -q '部分被' "$skill_dir/templates/docs-adr-README.tmpl"
+check "推翻规则不再写不修改原文" bash -c "! grep -rqE '不修改原文|不改原文' '$skill_dir/templates'"
+check "维护 Skill 推翻时同步旧 ADR" grep -q '旧 ADR' "$skill_dir/templates/maintain-project-docs-SKILL.md.tmpl"
+check "拆票 Skill 跳过已推翻的 ADR" grep -q 'Superseded' "$skill_dir/templates/split-into-tickets-SKILL.md.tmpl"
 check "CHANGELOG 记录 0.7.0" grep -q '^## \[0.7.0\]' "$root_dir/CHANGELOG.md"
 check "CHANGELOG 记录 0.6.0" grep -q '^## \[0.6.0\]' "$root_dir/CHANGELOG.md"
 
