@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0] - 2026-10-19
+
+### Changed
+
+- **执行计划统一为目录形式**：一个功能一个目录 `docs/exec-plans/active/<topic>/`，计划固定叫 `plan.md`，需要长篇设计时写同目录 `spec.md`；本地追踪时再加每票一个 `NN-<slug>.md`。GitLab / GitHub 追踪方式下的本地计划也改为 `active/<topic>/plan.md`（原为 `active/<topic>.md`）。
+- **AGENTS.md `## 任务追踪`**：新增固定一行写明上述落点，并说明其他 Skill 或工具自带默认落点时以此为准。
+
 ## [0.7.0] - 2026-10-19
 
 ### Changed

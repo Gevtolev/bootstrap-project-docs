@@ -42,7 +42,7 @@
 项目级 Skill 随项目仓库提交，成员 clone 即可用，无需各自安装；生成的 AGENTS.md `## 文档体系` 写明三者用法、本 Skill 版本与升级命令。维护与拆票两个项目级 Skill 是核心创新：`AGENTS.md` 是静态规则文件，项目级 Skill 通过 description 提供按需入口（非每次改动自动运行）。
 
 - `maintain-project-docs`：阶段性文档体检；记录决定或术语时，先对照术语表和代码，发现冲突就先问一轮（每问附推荐答案），术语定型当场入表。
-- `split-into-tickets`：把计划拆成纵切票（每张票打通一条端到端路径、自带测试），标注阻塞边，用户确认后按依赖顺序发布。追踪方式在 bootstrap 时选定：本地文件（默认，`docs/exec-plans/active/<topic>/` 每票一个文件）、GitLab issues（glab）或 GitHub issues（gh）。
+- `split-into-tickets`：把计划拆成纵切票（每张票打通一条端到端路径、自带测试），标注阻塞边，用户确认后按依赖顺序发布。追踪方式在 bootstrap 时选定：本地文件（默认，`docs/exec-plans/active/<topic>/` 下 `plan.md`、可选 `spec.md`，每票一个文件）、GitLab issues（glab）或 GitHub issues（gh）。
 
 ## 安装
 

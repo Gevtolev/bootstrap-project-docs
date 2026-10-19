@@ -66,6 +66,13 @@ check "主流程把 bootstrap 副本装进项目" grep -q '\.agents/skills/boots
 check "文档体系节说明项目内 bootstrap 副本" bash -c "sed -n '/^## 文档体系$/,/^## /p' '$skill_dir/templates/AGENTS.md.tmpl' | grep -q '\.agents/skills/bootstrap-project-docs/'"
 check "fixture 含项目内 bootstrap 副本" grep -q '^\.agents/skills/bootstrap-project-docs/SKILL\.md$' "$root_dir/tests/fixtures/empty/expected-structure.txt"
 check "fixture 含 Claude Code bootstrap 软链接" grep -q '^\.claude/skills/bootstrap-project-docs -> \.\./\.\./\.agents/skills/bootstrap-project-docs$' "$root_dir/tests/fixtures/empty/expected-structure.txt"
+check "执行计划统一为目录形式" bash -c "! grep -rq 'active/<topic>\.md' '$skill_dir'"
+check "exec-plans 索引说明 spec.md 与 plan.md 同目录" grep -q 'spec\.md' "$skill_dir/templates/docs-exec-plans-README.tmpl"
+check "exec-plan 模板把长设计指向 spec.md" grep -q 'spec\.md' "$skill_dir/templates/exec-plan.tmpl"
+check "AGENTS.md 模板写明设计稿叫 spec.md" grep -q 'spec\.md' "$skill_dir/templates/AGENTS.md.tmpl"
+check "AGENTS.md 模板要求覆盖其他工具的默认落点" grep -q '默认落点' "$skill_dir/templates/AGENTS.md.tmpl"
+check "追踪方式参考在三种方式下都用 plan.md" bash -c "[ \"\$(grep -c 'active/<topic>/plan\.md' '$skill_dir/references/ticket-trackers.md')\" -ge 3 ]"
+check "CHANGELOG 记录 0.8.0" grep -q '^## \[0.8.0\]' "$root_dir/CHANGELOG.md"
 check "CHANGELOG 记录 0.7.0" grep -q '^## \[0.7.0\]' "$root_dir/CHANGELOG.md"
 check "CHANGELOG 记录 0.6.0" grep -q '^## \[0.6.0\]' "$root_dir/CHANGELOG.md"
 

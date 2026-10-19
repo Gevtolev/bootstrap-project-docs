@@ -12,7 +12,7 @@ acme-app — 一个虚构的 SaaS 看板工具（仅作 bootstrap-project-docs �
 - 涉及数据库 schema 的改动需跑一次迁移演练
 
 **新功能必须先写计划：**
-- 跨 3+ 模块或 schema 变更的功能，开工前写 `docs/exec-plans/active/<topic>.md`
+- 跨 3+ 模块或 schema 变更的功能，开工前写 `docs/exec-plans/active/<topic>/plan.md`（长设计写同目录 `spec.md`）
 - 纯调研不落代码的，进 `docs/research/`
 
 **Commit 信息规范：**
