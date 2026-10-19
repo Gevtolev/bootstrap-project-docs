@@ -38,7 +38,8 @@ description: |
 **Phase 1 — 扫描与推断**（不动文件）
 读 manifest（package.json/pyproject.toml/Cargo.toml/...）→ 识别类型；列模块；清点现有文档。
 判断任务追踪方式（本地文件默认；GitLab / GitHub 按 `git remote -v` 与 CLI 可用性推荐，规则见 `references/ticket-trackers.md`），写进假设清单。
-输出"假设清单"。✋ 检查点 1：用户确认假设（含追踪方式）。
+确定本 Skill 的版本（本 Skill 仓库 CHANGELOG 最新版本号，对应 tag `v<版本>`）与团队成员能访问的安装来源（默认本 Skill 仓库的 remote），写进假设清单。
+输出"假设清单"。✋ 检查点 1：用户确认假设（含追踪方式、本 Skill 版本与安装来源）。
 完整自检见 `references/phase-1-checklist.md`。
 
 **Phase 2 — 骨架生成**（写到 `.project-docs-staging/`）
@@ -49,9 +50,12 @@ description: |
 ✋ 检查点 2：用户审阅 staging → 确认后原子 mv 到正式位置。完整自检见 `references/phase-2-checklist.md`。
 
 **Phase 2.5 — 生成项目级 skill**（核心创新）
-默认写入 `.agents/skills/<name>/SKILL.md`；若当前 Agent 明确要求其他项目级 Skill 目录，先向用户说明再使用其官方目录。
+三个项目级 Skill 都写入 `.agents/skills/<name>/`（Codex 等客户端读取），再为每个建相对软链接 `.claude/skills/<name> -> ../../.agents/skills/<name>`（Claude Code 只扫描 `.claude/skills/`），内容只有一份。团队有 Windows 成员且未开启 `core.symlinks` 时改为复制，并在 AGENTS.md `## 文档体系` 注明两处同步。
 - `maintain-project-docs`：实例化 `templates/maintain-project-docs-SKILL.md.tmpl`；description 按类型定制（见 `references/project-type-variants.md`），body 含按需文档体检清单和访谈式记录（记决定 / 术语前先对照术语表与代码追问），非每改动自动跑。
 - `split-into-tickets`：实例化 `templates/split-into-tickets-SKILL.md.tmpl`；把检查点 1 选定的追踪方式小节从 `references/ticket-trackers.md` 原样填入 `{{TICKET_TRACKER_SECTION}}`，并填 AGENTS.md 的 `## 任务追踪`。
+- `bootstrap-project-docs`：把本 Skill 目录原样复制到 `.agents/skills/bootstrap-project-docs/`（检查点 1 确认的版本），成员升级或重建文档体系时用同一版本，无需另装。
+
+填 AGENTS.md 的 `## 文档体系`：`{{BOOTSTRAP_VERSION}}`、`{{BOOTSTRAP_SOURCE_URL}}` 用检查点 1 确认的值。
 
 **Phase 2.6 — 生成项目级防漂移 hook（防漂移闭环）**
 检测 `git` 与 `claude` CLI：
@@ -99,6 +103,7 @@ docs 子目录，目的互斥不重叠（★=核心集，其余 lazy 按需建�
 | 跳过检查点 | 三个检查点必须停下问用户 |
 | 把架构写进 AGENTS.md | 关注点分离——架构进 ARCHITECTURE.md |
 | 忘了项目级维护 skill | Phase 2.5 必做；维护体系长期靠它 |
+| 项目级 Skill 只放 `.agents/skills/` | Claude Code 看不到；同时建 `.claude/skills/<name>` 相对软链接 |
 | 拆票 skill 留着三种追踪方式 | 只填检查点 1 选定的一种，AGENTS.md `## 任务追踪` 与之一致 |
 | 忘了生成防漂移 hook/映射表 | Phase 2.6：有 git 就装 pre-push hook + 映射表，无 git 落回 maintain |
 | 直接写到 cwd | 必须先 staging，用户确认后 mv |

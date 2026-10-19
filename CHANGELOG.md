@@ -8,6 +8,11 @@
 - **ADR 推翻规则**：推翻旧决策时，除新增 ADR（写 `Supersedes ADR-MMMM`）外，旧 ADR 标题下加一行可见状态（`Superseded by ADR-NNNN`，或「部分被 ADR-NNNN 推翻——某条不再生效」），矩阵同步改；旧 ADR 正文不改。maintain 与 split-into-tickets 读到这类状态时以新 ADR 为准。
 - **术语表位置**：`docs/glossary.md` 移到根目录 `GLOSSARY.md`，仍按需创建；条目格式不变（术语 + 一句定义 + `_Avoid_`）。
 
+### Added
+
+- **项目内安装与 Claude Code 可见**：项目级 Skill 仍写入 `.agents/skills/<name>/`，并新建相对软链接 `.claude/skills/<name> -> ../../.agents/skills/<name>`（Claude Code 只扫描 `.claude/skills/`）；本 Skill 也以锁定版本副本装进项目 `.agents/skills/bootstrap-project-docs/`，成员 clone 即用同一版本。
+- **AGENTS.md `## 文档体系`**：写明三个项目级 Skill 的用法、本 Skill 版本与安装来源、升级副本的命令，以及 Claude Code 需 ≥ v2.1.277 才自动读取 AGENTS.md。检查点 1 新增确认本 Skill 版本与安装来源。
+
 ### Credits
 
 - `docs/adr/` 顺序编号 ADR 与根目录 `GLOSSARY.md` 的约定参考 [mattpocock/skills](https://github.com/mattpocock/skills) 的 domain-modeling（MIT，Copyright (c) 2026 Matt Pocock）；推翻时在旧 ADR 加状态行为本体系补充。

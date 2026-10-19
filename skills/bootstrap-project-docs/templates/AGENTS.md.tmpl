@@ -43,6 +43,25 @@
 - 中大型功能用 `.agents/skills/split-into-tickets/` 拆成纵切票，发布为本仓库 GitHub issues（gh）
 -->
 
+## 文档体系
+
+本项目文档体系按 bootstrap-project-docs {{BOOTSTRAP_VERSION}} 搭建，三个项目级 Skill 随仓库提交：内容在 `.agents/skills/`（Codex 等客户端读取），`.claude/skills/` 下是指向它们的软链接（Claude Code 读取）。Claude Code 需 ≥ v2.1.277 才会自动读取本文件（本仓库不放 CLAUDE.md）。
+
+- `maintain-project-docs`：说「更新文档」「文档体检」「记个 ADR」「统一一下这个词」，或功能收尾、发版前使用。按清单检查 ADR、术语表、索引与执行计划；记决定或术语前先追问边界。
+- `split-into-tickets`：中大型功能开工前说「拆票」「拆任务」使用。拆成纵切票并标阻塞关系，追踪位置见「任务追踪」。
+- `bootstrap-project-docs`（`.agents/skills/bootstrap-project-docs/`）：升级或重建本项目文档体系时使用，日常不需要。
+
+升级项目内的 bootstrap 副本（`<版本>` 换成目标版本，再按新版本 CHANGELOG 重跑需要的阶段）：
+
+```bash
+tmp="$(mktemp -d)"
+git clone -q --depth 1 --branch v<版本> {{BOOTSTRAP_SOURCE_URL}} "$tmp"
+rsync -a --delete "$tmp/skills/bootstrap-project-docs/" .agents/skills/bootstrap-project-docs/
+rm -rf "${tmp:?}"
+```
+
+在其他项目使用时装到用户目录：clone 同一仓库，把 `skills/bootstrap-project-docs` 软链接到 `~/.claude/skills/`（Claude Code）或 `${CODEX_HOME:-$HOME/.codex}/skills/`（Codex），详见该仓库 README。
+
 ## 文档
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — 项目架构、目录结构、数据流

@@ -13,6 +13,8 @@
 - [ ] `docs/exec-plans/exec-plan-template.md`
 - [ ] `.agents/skills/maintain-project-docs/SKILL.md`
 - [ ] `.agents/skills/split-into-tickets/SKILL.md`
+- [ ] `.agents/skills/bootstrap-project-docs/`（本 Skill 副本，版本与检查点 1 一致）
+- [ ] `.claude/skills/<name>` 三个相对软链接，各指向 `../../.agents/skills/<name>`
 
 ## 不应预建（lazy，首次有内容才创建）
 
