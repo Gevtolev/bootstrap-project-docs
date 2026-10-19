@@ -8,6 +8,10 @@
 - **ADR 推翻规则**：推翻旧决策时，除新增 ADR（写 `Supersedes ADR-MMMM`）外，旧 ADR 标题下加一行可见状态（`Superseded by ADR-NNNN`，或「部分被 ADR-NNNN 推翻——某条不再生效」），矩阵同步改；旧 ADR 正文不改。maintain 与 split-into-tickets 读到这类状态时以新 ADR 为准。
 - **术语表位置**：`docs/glossary.md` 移到根目录 `GLOSSARY.md`，仍按需创建；条目格式不变（术语 + 一句定义 + `_Avoid_`）。
 
+### Credits
+
+- `docs/adr/` 顺序编号 ADR 与根目录 `GLOSSARY.md` 的约定参考 [mattpocock/skills](https://github.com/mattpocock/skills) 的 domain-modeling（MIT，Copyright (c) 2026 Matt Pocock）；推翻时在旧 ADR 加状态行为本体系补充。
+
 ## [0.6.0] - 2026-10-19
 
 ### Added
