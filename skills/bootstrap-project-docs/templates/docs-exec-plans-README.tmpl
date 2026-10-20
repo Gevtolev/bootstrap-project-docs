@@ -6,8 +6,8 @@
 - 新建执行计划放在 `active/`，完成后移至 `completed/`（移动本身就是收口）
 - 纯调研放 `../research/`
 - 修改或新增文件后更新下方索引
-- **一个功能一个目录** `active/<topic>/`：计划写 `plan.md`；需要长篇设计时写同目录 `spec.md`；本地追踪时再加每票一个 `NN-<slug>.md`。完成后整个目录移到 `completed/`
-- **拆票**：中大型功能用 `split-into-tickets` 拆成纵切票
+- **一个功能一个目录** `active/<topic>/`：计划写 `plan.md`；需要长篇设计时写同目录 `spec.md`；本地追踪时再加每个任务一个 `NN-<slug>.md`。完成后整个目录移到 `completed/`
+- **拆任务**：中大型功能用 `split-into-tickets` 拆成纵切任务
 - **按依赖顺序推进**：每份计划用 `Blocked by` 标注前置依赖，形成 DAG，先做无依赖的
 - **链接不复制**：计划保持紧凑（整体会被加载进上下文）；长设计写同目录 `spec.md`，调研/prototype 链接到 `../research/`，不在计划里复制；耐久的"为什么"进 `../adr/` ADR
 

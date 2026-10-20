@@ -20,10 +20,10 @@
 ## 追踪方式：本地文件
 
 - 一个功能一个目录：计划写 `docs/exec-plans/active/<topic>/plan.md`（按 `docs/exec-plans/exec-plan-template.md`），需要长篇设计时另写同目录 `spec.md`。
-- 每张票一个文件：`NN-<slug>.md`，从 `01` 起按依赖顺序编号（阻塞项在前）；不要把多张票合成一个文件。
-- `**Blocked by**` 写前置票编号，如 `01, 03`。
-- 状态改在票内 `**状态**` 行：📋 待开始 / 🔄 进行中 / ✅ 已完成；讨论与结论追加到票末尾 `## 记录`。
-- 全部票完成后，把整个目录移到 `docs/exec-plans/completed/`，并更新 `docs/exec-plans/README.md` 索引。
+- 每个任务一个文件：`NN-<slug>.md`，从 `01` 起按依赖顺序编号（阻塞项在前）；不要把多个任务合成一个文件。
+- `**Blocked by**` 写前置任务编号，如 `01, 03`。
+- 状态改在任务内 `**状态**` 行：📋 待开始 / 🔄 进行中 / ✅ 已完成；讨论与结论追加到任务末尾 `## 记录`。
+- 全部任务完成后，把整个目录移到 `docs/exec-plans/completed/`，并更新 `docs/exec-plans/README.md` 索引。
 ```
 
 ## GitLab
@@ -32,11 +32,11 @@
 ## 追踪方式：GitLab issues（glab）
 
 - 创建：`glab issue create --title "<NN>: <标题>" --description "<正文>"`（多行正文用 heredoc）。
-- 阻塞边：Premium/Ultimate 用原生阻塞链接，发一条 note：`glab issue note <票> --message "/blocked_by #<前置>"`；免费版或不可用时，在正文第一行写 `Blocked by: #<n>, #<m>`，正文里的 `**Blocked by**` 同步写 issue 号。
-- 来源是已有 issue 时，在子票正文顶部写 `Part of #<父 issue>`。
-- 本地 `docs/exec-plans/active/<topic>/plan.md` 只保留目标、决策日志和 issue 链接列表，不复制票正文；需要长篇设计时另写同目录 `spec.md`。
-- 前沿：`glab issue list -O json` 中仍为 open、且所有阻塞 issue 都已关闭的票。
-- 完成：先 `glab issue note <票> --message "<结论>"`，再 `glab issue close <票>`。
+- 阻塞边：Premium/Ultimate 用原生阻塞链接，发一条 note：`glab issue note <issue> --message "/blocked_by #<前置>"`；免费版或不可用时，在正文第一行写 `Blocked by: #<n>, #<m>`，正文里的 `**Blocked by**` 同步写 issue 号。
+- 来源是已有 issue 时，在子 issue 正文顶部写 `Part of #<父 issue>`。
+- 本地 `docs/exec-plans/active/<topic>/plan.md` 只保留目标、决策日志和 issue 链接列表，不复制 issue 正文；需要长篇设计时另写同目录 `spec.md`。
+- 前沿：`glab issue list -O json` 中仍为 open、且所有阻塞 issue 都已关闭的 issue。
+- 完成：先 `glab issue note <issue> --message "<结论>"`，再 `glab issue close <issue>`。
 ```
 
 ## GitHub
@@ -45,9 +45,9 @@
 ## 追踪方式：GitHub issues（gh）
 
 - 创建：`gh issue create --title "<NN>: <标题>" --body "<正文>"`（多行正文用 heredoc）。
-- 阻塞边：仓库启用 issue dependencies 时用原生关系：`gh api --method POST repos/<owner>/<repo>/issues/<票>/dependencies/blocked_by -F issue_id=<前置票的数据库 id>`（数据库 id 由 `gh api repos/<owner>/<repo>/issues/<n> --jq .id` 获取，不是 `#编号`）；不可用时在正文第一行写 `Blocked by: #<n>, #<m>`。
+- 阻塞边：仓库启用 issue dependencies 时用原生关系：`gh api --method POST repos/<owner>/<repo>/issues/<issue>/dependencies/blocked_by -F issue_id=<前置 issue 的数据库 id>`（数据库 id 由 `gh api repos/<owner>/<repo>/issues/<n> --jq .id` 获取，不是 `#编号`）；不可用时在正文第一行写 `Blocked by: #<n>, #<m>`。
 - 来源是已有 issue 时，可用 `gh issue create --parent <父 issue>` 挂成子 issue；不支持时在正文顶部写 `Part of #<父 issue>`。
-- 本地 `docs/exec-plans/active/<topic>/plan.md` 只保留目标、决策日志和 issue 链接列表，不复制票正文；需要长篇设计时另写同目录 `spec.md`。
-- 前沿：`gh issue list --state open` 中所有阻塞 issue 都已关闭的票。
-- 完成：`gh issue close <票> --comment "<结论>"`。
+- 本地 `docs/exec-plans/active/<topic>/plan.md` 只保留目标、决策日志和 issue 链接列表，不复制 issue 正文；需要长篇设计时另写同目录 `spec.md`。
+- 前沿：`gh issue list --state open` 中所有阻塞 issue 都已关闭的 issue。
+- 完成：`gh issue close <issue> --comment "<结论>"`。
 ```

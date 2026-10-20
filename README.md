@@ -33,16 +33,16 @@
 ├── .agents/skills/maintain-project-docs/
 │   └── SKILL.md                                # 项目级维护 skill —— 按需文档体检 + 访谈式记录决定 / 术语
 ├── .agents/skills/split-into-tickets/
-│   └── SKILL.md                                # 项目级拆票 skill —— 纵切票 + 阻塞边，发布到选定的追踪处
+│   └── SKILL.md                                # 项目级拆任务 skill —— 纵切任务 + 阻塞边，发布到选定的追踪处
 ├── .agents/skills/bootstrap-project-docs/      # 本 Skill 的锁定版本副本，成员升级 / 重建时用同一版本
 ├── .claude/skills/<上面三个>                   # 相对软链接 → ../../.agents/skills/<name>（Claude Code 只扫描 .claude/skills/）
 └── .git/hooks/pre-push                         # 防漂移 hook（Phase 2.6 生成）
 ```
 
-项目级 Skill 随项目仓库提交，成员 clone 即可用，无需各自安装；生成的 AGENTS.md `## 文档体系` 写明三者用法、本 Skill 版本与升级命令。维护与拆票两个项目级 Skill 是核心创新：`AGENTS.md` 是静态规则文件，项目级 Skill 通过 description 提供按需入口（非每次改动自动运行）。
+项目级 Skill 随项目仓库提交，成员 clone 即可用，无需各自安装；生成的 AGENTS.md `## 文档体系` 写明三者用法、本 Skill 版本与升级命令。维护与拆任务两个项目级 Skill 是核心创新：`AGENTS.md` 是静态规则文件，项目级 Skill 通过 description 提供按需入口（非每次改动自动运行）。
 
 - `maintain-project-docs`：阶段性文档体检；记录决定或术语时，先对照术语表和代码，发现冲突就先问一轮（每问附推荐答案），术语定型当场入表。
-- `split-into-tickets`：把计划拆成纵切票（每张票打通一条端到端路径、自带测试），标注阻塞边，用户确认后按依赖顺序发布。追踪方式在 bootstrap 时选定：本地文件（默认，`docs/exec-plans/active/<topic>/` 下 `plan.md`、可选 `spec.md`，每票一个文件）、GitLab issues（glab）或 GitHub issues（gh）。
+- `split-into-tickets`：把计划拆成纵切任务（每个任务打通一条端到端路径、自带测试），标注阻塞边，用户确认后按依赖顺序发布。追踪方式在 bootstrap 时选定：本地文件（默认，`docs/exec-plans/active/<topic>/` 下 `plan.md`、可选 `spec.md`，每个任务一个文件）、GitLab issues（glab）或 GitHub issues（gh）。
 
 ## 安装
 
@@ -116,7 +116,7 @@ Claude Code 也可使用 `/bootstrap-project-docs`。或者直接说：“帮我
 | 工具 | 职责 | 关系 |
 |------|------|------|
 | Agent 自带的初始化命令 | 通常只生成单一入口文件 | 本 Skill 补齐架构、决策、计划与维护体系 |
-| 本 skill 生成的项目级 `maintain-project-docs` / `split-into-tickets` | 文档体检、访谈式记录、拆票 | 本 skill 的产物，长期生效，不依赖其他第三方 Skill |
+| 本 skill 生成的项目级 `maintain-project-docs` / `split-into-tickets` | 文档体检、访谈式记录、拆任务 | 本 skill 的产物，长期生效，不依赖其他第三方 Skill |
 | Claude CLI 防漂移 hook | 提交前检查机械文档漂移 | 可选能力；没有 Claude CLI 时自动降级为人工体检 |
 
 ## 进一步阅读
@@ -130,7 +130,7 @@ Claude Code 也可使用 `/bootstrap-project-docs`。或者直接说：“帮我
 
 ## 致谢
 
-ADR / 术语表约定、访谈式追问与纵切拆票的思路参考了 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT，Copyright (c) 2026 Matt Pocock），本仓库按自身体系用中文重写，不依赖其 Skill。
+ADR / 术语表约定、访谈式追问与纵切拆任务的思路参考了 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT，Copyright (c) 2026 Matt Pocock），本仓库按自身体系用中文重写，不依赖其 Skill。
 
 ## License
 

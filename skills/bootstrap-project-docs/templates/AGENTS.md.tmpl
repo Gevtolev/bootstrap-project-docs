@@ -38,10 +38,10 @@
 
 {{TICKET_TRACKER_LINE}}
 - 一个功能一个目录 `docs/exec-plans/active/<topic>/`：计划写 `plan.md`，需要长篇设计时写同目录 `spec.md`。其他 Skill 或工具有自己的默认落点（另建 specs/、plans/ 目录）时，以这里为准。
-<!-- TODO: 一行写明拆票 Skill 与追踪位置，按 bootstrap 时选定的方式三选一：
-- 中大型功能用 `.agents/skills/split-into-tickets/` 拆成纵切票，票文件放 `docs/exec-plans/active/<topic>/`（每票一个文件）
-- 中大型功能用 `.agents/skills/split-into-tickets/` 拆成纵切票，发布为本仓库 GitLab issues（glab）
-- 中大型功能用 `.agents/skills/split-into-tickets/` 拆成纵切票，发布为本仓库 GitHub issues（gh）
+<!-- TODO: 一行写明拆任务 Skill 与追踪位置，按 bootstrap 时选定的方式三选一：
+- 中大型功能用 `.agents/skills/split-into-tickets/` 拆成纵切任务，任务文件放 `docs/exec-plans/active/<topic>/`（每个任务一个文件）
+- 中大型功能用 `.agents/skills/split-into-tickets/` 拆成纵切任务，发布为本仓库 GitLab issues（glab）
+- 中大型功能用 `.agents/skills/split-into-tickets/` 拆成纵切任务，发布为本仓库 GitHub issues（gh）
 -->
 
 ## 文档体系
@@ -49,7 +49,7 @@
 本项目文档体系按 bootstrap-project-docs {{BOOTSTRAP_VERSION}} 搭建，三个项目级 Skill 随仓库提交：内容在 `.agents/skills/`（Codex 等客户端读取），`.claude/skills/` 下是指向它们的软链接（Claude Code 读取）。Claude Code 需 ≥ v2.1.277 才会自动读取本文件（本仓库不放 CLAUDE.md）。
 
 - `maintain-project-docs`：说「更新文档」「文档体检」「记个 ADR」「统一一下这个词」，或功能收尾、发版前使用。按清单检查 ADR、术语表、索引与执行计划；记决定或术语前先追问边界。
-- `split-into-tickets`：中大型功能开工前说「拆票」「拆任务」使用。拆成纵切票并标阻塞关系，追踪位置见「任务追踪」。
+- `split-into-tickets`：中大型功能开工前说「拆任务」「拆任务」使用。拆成纵切任务并标阻塞关系，追踪位置见「任务追踪」。
 - `bootstrap-project-docs`（`.agents/skills/bootstrap-project-docs/`）：升级或重建本项目文档体系时使用，日常不需要。
 
 升级项目内的 bootstrap 副本（`<版本>` 换成目标版本，再按新版本 CHANGELOG 重跑需要的阶段）：

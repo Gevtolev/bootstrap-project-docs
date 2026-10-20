@@ -8,7 +8,7 @@ description: |
   Use also when an agent's init output feels too thin, when an existing AGENTS.md needs
   restructuring, or when legacy CLAUDE.md guidance must be migrated into AGENTS.md.
   Use also when a project needs a ticket-splitting and task-tracking convention for agents
-  (拆票规范, 任务追踪, 本地任务文件 / GitLab / GitHub issues).
+  (拆任务规范, 任务追踪, 本地任务文件 / GitLab / GitHub issues).
 ---
 
 # Bootstrap Project Docs
@@ -104,7 +104,7 @@ docs 子目录，目的互斥不重叠（★=核心集，其余 lazy 按需建�
 | 把架构写进 AGENTS.md | 关注点分离——架构进 ARCHITECTURE.md |
 | 忘了项目级维护 skill | Phase 2.5 必做；维护体系长期靠它 |
 | 项目级 Skill 只放 `.agents/skills/` | Claude Code 看不到；同时建 `.claude/skills/<name>` 相对软链接 |
-| 拆票 skill 留着三种追踪方式 | 只填检查点 1 选定的一种，AGENTS.md `## 任务追踪` 与之一致 |
+| 拆任务 skill 留着三种追踪方式 | 只填检查点 1 选定的一种，AGENTS.md `## 任务追踪` 与之一致 |
 | 忘了生成防漂移 hook/映射表 | Phase 2.6：有 git 就装 pre-push hook + 映射表，无 git 落回 maintain |
 | 直接写到 cwd | 必须先 staging，用户确认后 mv |
 

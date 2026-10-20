@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.8.1] - 2026-10-20
+
+### Changed
+
+- **用语统一，不再说「票」**：Skill、模板、清单和 README 里，通用位置称「任务」（纵切任务、拆任务），GitLab / GitHub 追踪小节称「issue」（如 `glab issue note <issue>`）；触发词「拆票」改为「拆 issue」，「拆任务」保留。`split-into-tickets`、`ticket-trackers.md`、`{{TICKET_TRACKER_SECTION}}` 等英文标识符不变，目录结构与流程不变，已装本 Skill 的项目升级后只有措辞变化。
+
 ## [0.8.0] - 2026-10-19
 
 ### Changed
